@@ -57,6 +57,7 @@ class UserController {
   async loginHandler(req: Request, res: Response): Promise<void> {
     try {
       const { email, password } = req.body;
+      
 
       // Validate the input data here if needed
 
@@ -66,7 +67,10 @@ class UserController {
       if (user) {
         // Generate a JWT token
         const token = jwt.sign({ userId: user.id }, 'your-secret-key');
-
+        res.cookie("jwt-user", token, {
+          httpOnly: true,
+          maxAge: 24 * 60 * 60 * 1000
+        });
         // Return the token in the response
         res.status(200).json({ token });
       } else {

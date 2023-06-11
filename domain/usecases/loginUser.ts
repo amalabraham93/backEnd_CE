@@ -18,7 +18,7 @@ class LoginUseCase {
     if (user && user.password === password) {
         return user;
       }
-    return user;
+    return null;
   }
 }
 

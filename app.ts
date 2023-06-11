@@ -4,12 +4,20 @@ import  organizerRouter from './infrastructure/routes/organizerRoutes';
 import adminRouter from './infrastructure/routes/adminRoutes';
 import DatabaseConnection from './infrastructure/database/connection';
 import dotenv from 'dotenv';
+import cors from 'cors'
 
 dotenv.config();
 const app = express();
 
+
 app.use(express.json());
 
+app.use(
+  cors({
+    credentials: true,
+    origin: ['http://localhost:4200'],
+  })
+);
 const databaseConnection = new DatabaseConnection();
 
 
