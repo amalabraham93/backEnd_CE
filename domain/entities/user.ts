@@ -1,14 +1,18 @@
 class User {
     public id: string;
     private name: string;
-    private email: string;
+    public email: string;
     public password: string;
+    public role: string;
+    public verificationToken: string;
   
-    constructor(id: string, name: string, email: string, password: string) {
+    constructor(id: string, name: string, email: string, password: string, role:string, verificationToken: string) {
       this.id = id;
       this.name = name;
       this.email = email;
       this.password = password;
+      this.role = role;
+      this.verificationToken = verificationToken;
     }
   
     getId(): string {
@@ -29,6 +33,12 @@ class User {
   
     setPassword(password: string): void {
       this.password = password;
+    }
+    getRole(): string {
+      return this.role;
+    }
+    getverificationToken(): string {
+      return this.verificationToken;
     }
   }
   

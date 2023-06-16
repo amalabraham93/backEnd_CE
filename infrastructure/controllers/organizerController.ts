@@ -1,25 +1,72 @@
 import { Request, Response } from 'express';
 import CreateOrganizer from 'domain/usecases/createOrganizer';
+import OrganizerRepository from 'domain/repositories/organizerRepository';
+import LoginOrganizerUseCase from 'domain/usecases/loginOrganizer';
+import jwt from "jsonwebtoken";
+
 
 class organizerController {
   private createOrganizer: CreateOrganizer;
+  private loginOrganizerUseCase: LoginOrganizerUseCase;
+  // private organizerRepository: OrganizerRepository;
 
-  constructor(createOrganizer: CreateOrganizer) {
+  constructor(createOrganizer: CreateOrganizer,
+    loginOrganizerUseCase: LoginOrganizerUseCase  ) {
+      this.loginOrganizerUseCase = loginOrganizerUseCase
     this.createOrganizer = createOrganizer;
+    this.createOrganizerHandler = this.createOrganizerHandler.bind(this)
+    this.loginHandler = this.loginHandler.bind(this);
   }
 
   async createOrganizerHandler(req: Request, res: Response): Promise<void> {
     try {
-      const { name, email, password } = req.body;
-
+      const { organizername, email, password } = req.body;
       // Validate the input data here if needed
 
-      const organizer = await this.createOrganizer.execute( name, email, password );
+      const organizer = await this.createOrganizer.execute( organizername, email, password );
 
-      res.status(201).json(organizer);
+      if (organizer) {
+        // Generate a JWT token
+        const token = jwt.sign({ userId: organizer.id }, "your-secret-key");
+        res.cookie("jwt-organizer", token, {
+          httpOnly: true,
+          maxAge: 24 * 60 * 60 * 1000,
+        });
+        // Return the token in the response
+        res.status(200).json({ token });
+      } else {
+        res.status(401).json({ error: "Invalid email or password" });
+      }
+
+     
     } catch (error) {
       console.error('Error creating organizer:', error);
       res.status(500).json({ error: 'Internal server error' });
+    }
+  }
+
+  async loginHandler(req: Request, res: Response): Promise<void> {
+    try {
+      const { email, password } = req.body;
+
+      // Perform login using the LoginUseCase
+      const organizer = await this.loginOrganizerUseCase.execute(email, password);
+
+      if (organizer) {
+        // Generate a JWT token
+        const token = jwt.sign({ organizerId: organizer.id }, "your-secret-key");
+        res.cookie("jwt-user", token, {
+          httpOnly: true,
+          maxAge: 24 * 60 * 60 * 1000,
+        });
+        // Return the token in the response
+        res.status(200).json({ token });
+      } else {
+        res.status(401).json({ error: "Invalid email or password" });
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+      res.status(500).json({ error: "Internal server error" });
     }
   }
 }

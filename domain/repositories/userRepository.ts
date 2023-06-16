@@ -8,6 +8,9 @@ interface UserRepository {
   getAllUsers(): Promise<User[]>;
   deleteUser(id: string): Promise<void>;
   // getUserByEmailAndPassword(email: string, password: string): Promise<User | null>;
+  createVerificationToken(userId: string, token: string): Promise<void>;
+  findUserByVerificationToken(token: string): Promise<User | null>;
+  markEmailAsVerified(userId: string): Promise<void>;
 }
 
 export default UserRepository;

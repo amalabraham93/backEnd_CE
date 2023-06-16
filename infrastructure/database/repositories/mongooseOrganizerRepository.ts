@@ -3,7 +3,7 @@ import Organizer from 'domain/entities/organizer';
 import OrganizerRepository from 'domain/repositories/organizerRepository';
 
 const OrganizerSchema = new mongoose.Schema({
-  name: { type: String, required: true },
+  organizername: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
 });
@@ -11,6 +11,7 @@ const OrganizerSchema = new mongoose.Schema({
 const OrganizerModel = mongoose.model('organization', OrganizerSchema);
 
 class MongooseOrganizerRepository implements OrganizerRepository {
+
   async createOrganizer(organizer: Organizer): Promise<Organizer> {
     const createdOrganizer = await OrganizerModel.create(organizer);
     return createdOrganizer.toObject();

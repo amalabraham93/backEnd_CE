@@ -1,5 +1,6 @@
 import OrganizerRepository from '../../domain/repositories/organizerRepository';
 import Organizer from '../../domain/entities/organizer';
+import bcrypt from "bcryptjs"
 
 class CreateOrganizerUseCase {
   private organizerRepository: OrganizerRepository;
@@ -8,12 +9,12 @@ class CreateOrganizerUseCase {
     this.organizerRepository = organizerRepository;
   }
 
-  async execute(name: string, email: string, organization: string): Promise<Organizer> {
+  async execute(organizername: string, email: string, password: string): Promise<Organizer> {
     // Validate inputs
     // ...
-
+    const newPass = await bcrypt.hash(password, 10)
     // Create a new organizer entity
-    const newOrganizer = new Organizer('', name, email, organization);
+    const newOrganizer = new Organizer('', organizername, email, newPass);
 
     // Save the organizer to the database
     const createdOrganizer = await this.organizerRepository.createOrganizer(newOrganizer);

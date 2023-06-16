@@ -1,25 +1,19 @@
 import express from 'express';
 import OrganizerController from '../controllers/organizerController';
+import LoginOrganizerUseCase from '../../domain/usecases/loginOrganizer';
 import CreateOrganizerUseCase from '../../domain/usecases/createOrganizer';
 import MongooseOrganizerRepository from '../../infrastructure/database/repositories/mongooseOrganizerRepository';
 
 const organizerRouter = express.Router();
 
-
 const organizerRepository = new MongooseOrganizerRepository()
+const loginOrganizerUseCase = new LoginOrganizerUseCase(organizerRepository)
 const createOrganizer = new CreateOrganizerUseCase(organizerRepository);
-const organizerController = new OrganizerController(createOrganizer);
+const organizerController = new OrganizerController(createOrganizer,loginOrganizerUseCase);
 
 // POST /organizers
-organizerRouter.post('/', organizerController.createOrganizerHandler);
+organizerRouter.post('/signup', organizerController.createOrganizerHandler);
 
-// GET /organizers/:id
-// router.get('/:id', organizerController.getOrganizerHandler);
-
-// PUT /organizers/:id
-// router.put('/:id', organizerController.updateOrganizerHandler);
-
-// DELETE /organizers/:id
-// router.delete('/:id', organizerController.deleteOrganizerHandler);
+organizerRouter.post('/login', organizerController.loginHandler);
 
 export default organizerRouter;

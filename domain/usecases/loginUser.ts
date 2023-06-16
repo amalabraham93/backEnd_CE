@@ -1,5 +1,6 @@
 import User from '../../domain/entities/user';
 import UserRepository from '../../domain/repositories/userRepository';
+import bcrypt from "bcryptjs"
 
 class LoginUseCase {
   private userRepository: UserRepository;
@@ -15,7 +16,10 @@ class LoginUseCase {
     // Retrieve the user from the database by email and password
     const user = await this.userRepository.getUserByEmail(email);
     
-    if (user && user.password === password) {
+    const passcheck= await bcrypt.compare(password,user!.password)
+    
+    
+    if (user && passcheck) {
         return user;
       }
     return null;
