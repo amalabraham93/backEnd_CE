@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import CreateOrganizer from 'domain/usecases/createOrganizer';
 import OrganizerRepository from 'domain/repositories/organizerRepository';
 import LoginOrganizerUseCase from 'domain/usecases/loginOrganizer';
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 
 
 class organizerController {
@@ -24,10 +24,11 @@ class organizerController {
       // Validate the input data here if needed
 
       const organizer = await this.createOrganizer.execute( organizername, email, password );
-
+       
+       
       if (organizer) {
         // Generate a JWT token
-        const token = jwt.sign({ userId: organizer.id }, "your-secret-key");
+        const token = jwt.sign({ _id: organizer._id }, "your-secret-key") 
         res.cookie("jwt-organizer", token, {
           httpOnly: true,
           maxAge: 24 * 60 * 60 * 1000,
@@ -51,11 +52,11 @@ class organizerController {
 
       // Perform login using the LoginUseCase
       const organizer = await this.loginOrganizerUseCase.execute(email, password);
-
+     
       if (organizer) {
         // Generate a JWT token
-        const token = jwt.sign({ organizerId: organizer.id }, "your-secret-key");
-        res.cookie("jwt-user", token, {
+        const token = jwt.sign({  _id: organizer._id }, "your-secret-key");
+        res.cookie("jwt-organizer", token, {
           httpOnly: true,
           maxAge: 24 * 60 * 60 * 1000,
         });
