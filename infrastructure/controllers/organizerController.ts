@@ -28,7 +28,7 @@ class organizerController {
        
       if (organizer) {
         // Generate a JWT token
-        const token = jwt.sign({ _id: organizer._id }, "your-secret-key") 
+        const token = jwt.sign({ _id: organizer.id }, "your-secret-key") 
         res.cookie("jwt-organizer", token, {
           httpOnly: true,
           maxAge: 24 * 60 * 60 * 1000,
@@ -55,7 +55,7 @@ class organizerController {
      
       if (organizer) {
         // Generate a JWT token
-        const token = jwt.sign({  _id: organizer._id }, "your-secret-key");
+        const token = jwt.sign({  _id: organizer.id }, "your-secret-key");
         res.cookie("jwt-organizer", token, {
           httpOnly: true,
           maxAge: 24 * 60 * 60 * 1000,

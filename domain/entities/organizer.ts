@@ -1,18 +1,18 @@
 class Organizer {
-    public _id: string;
+    public id: string;
     private organizername: string;
     private email: string;
     public password: string;
   
-    constructor(_id: string, name: string, email: string, password: string) {
-      this._id = _id;
+    constructor(id: string, name: string, email: string, password: string) {
+      this.id = id;
       this.organizername = name;
       this.email = email;
       this.password = password;
     }
   
     getId(): string {
-      return this._id;
+      return this.id;
     }
   
     getName(): string {
