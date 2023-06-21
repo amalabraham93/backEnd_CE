@@ -8,6 +8,7 @@ import CreateConferenceUseCase from '../../domain/usecases/conference.ts/createC
 import ConferenceController from '../../infrastructure/controllers/conferenceController';
 import GetAllConfByOrgUseCase from '../../domain/usecases/conference.ts/getConfByOrg';
 import GetConfByIdUseCase from '../../domain/usecases/conference.ts/getConfById';
+import GetAllConfUseCase from '../../domain/usecases/conference.ts/getAllConferences';
 
 
 const organizerRouter = express.Router();
@@ -22,16 +23,20 @@ const conferenceRepository = new MongooseConferenceRepository()
 const createConference = new CreateConferenceUseCase(conferenceRepository)
 const getConferencesByOrganizerId = new GetAllConfByOrgUseCase(conferenceRepository);
 const getConferenceById =  new GetConfByIdUseCase(conferenceRepository)
-const conferenceController = new ConferenceController(createConference,getConferencesByOrganizerId, getConferenceById)
+const getAllConference = new GetAllConfUseCase (conferenceRepository)
+const conferenceController = new ConferenceController(createConference,getConferencesByOrganizerId, getConferenceById,getAllConference)
 
 // POST /organizers
 organizerRouter.post('/signup', organizerController.createOrganizerHandler);
 
 organizerRouter.post('/login', organizerController.loginHandler);
+organizerRouter.post('/logout', organizerController.logout);
 
 organizerRouter.post('/create-conference', conferenceController.CreateConferenceHandler)
 organizerRouter.get('/conferences', conferenceController.getConferencesByOrganizerIdHandler);
 organizerRouter.get('/conferences/:confId', conferenceController.getConfByIdHandler);
+organizerRouter.get('/get-all-conferences', conferenceController.getAllConferenceHandler);
+
 
 
 

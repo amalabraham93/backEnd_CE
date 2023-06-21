@@ -24,6 +24,7 @@ class LoginUseCase {
       }
     return null;
   }
+ 
 }
 
 export default LoginUseCase;

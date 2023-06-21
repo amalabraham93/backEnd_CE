@@ -12,6 +12,7 @@ const userRouter = express.Router();
 // Create an instance of the UserRepository
 const userRepository = new MongooseUserRepository();
 const loginUseCase = new LoginUseCase(userRepository);
+
 const emailService =  new NodeMailerService()
 // Create an instance of the CreateUserUseCase and pass the UserRepository instance
 const createUserUseCase = new CreateUserUseCase(userRepository,emailService);
@@ -23,6 +24,7 @@ const userController = new UserController(createUserUseCase,userRepository,verif
 userRouter.post('/signup', userController.createUserHandler);
 
 userRouter.post('/login', userController.loginHandler);
+userRouter.post('/logout', userController.logout);
 
 
 userRouter.get('/getusers', userController.getAllUsersHandler);

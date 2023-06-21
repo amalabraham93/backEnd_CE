@@ -30,13 +30,23 @@ class MongooseConferenceRepository implements ConferenceRepository{
     delete(conference: Conference): Promise<Conference> {
         throw new Error("Method not implemented.");
     }
-   async getById(id: ObjectId): Promise<Conference | null> {
+
+
+
+   async getById(id: string): Promise<Conference | null> {
         
-    const conference= await ConferenceModel.findById({_id:id}).exec();
+    const conference= await ConferenceModel.findById(id).exec();
     return conference ? conference.toObject() : null;
     }
-    getAll(): Promise<Conference[]> {
-        throw new Error("Method not implemented.");
+
+
+
+    async getAll(): Promise<Conference[]> {
+        
+        const conferences = await ConferenceModel.find({}).limit(4)
+        
+        
+        return conferences.map(conference => conference.toObject());
     }
 
     async getByOrganizerId(organizations: Types.ObjectId): Promise<Conference[]> {
@@ -44,6 +54,7 @@ class MongooseConferenceRepository implements ConferenceRepository{
         return conferences.map(conference => conference.toObject());
       }
 
+      
 }
 
 export default MongooseConferenceRepository

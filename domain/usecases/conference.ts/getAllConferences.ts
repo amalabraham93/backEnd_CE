@@ -4,18 +4,20 @@ import Conference from "../../../domain/entities/conference";
 import ConferenceRepository from "../../../domain/repositories/conferenceRepository";
 import { ObjectId } from "mongodb";
 
-class GetConfByIdUseCase {
+class GetAllConfUseCase {
   private conferenceRepository: ConferenceRepository;
   constructor(conferenceRepository: ConferenceRepository) {
     this.conferenceRepository = conferenceRepository;
   }
 
-  async execute(id:string): Promise<Conference | null > {
+  async execute(): Promise<Conference[] > {
      
     
-    const getConfById = this.conferenceRepository.getById(id);
+    const getAllConf = this.conferenceRepository.getAll();
+ 
     
-    return getConfById;
+    
+    return getAllConf;
   }
 }
-export default GetConfByIdUseCase;
+export default GetAllConfUseCase;

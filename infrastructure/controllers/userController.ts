@@ -5,7 +5,6 @@ import LoginUseCase from "../../domain/usecases/loginUser";
 import VerifyEmailUseCase from "../../domain/usecases/VerifyEmailUseCase";
 import jwt from "jsonwebtoken";
 
-
 class UserController {
   private createUserUseCase: CreateUserUseCase;
   private loginUseCase: LoginUseCase;
@@ -34,18 +33,18 @@ class UserController {
       const { name, email, password, role } = req.body;
       // Validate the input data here if needed
 
-
-
-
-      const findUser = await this.userRepository.getUserByEmail(email)
+      const findUser = await this.userRepository.getUserByEmail(email);
 
       if (findUser) {
-        res.status(400).send({error: "Email already registered"})
+        res.status(400).send({ error: "Email already registered" });
       } else {
+        const user = await this.createUserUseCase.execute(
+          name,
+          email,
+          password,
+          role
+        );
 
-       
-        const user = await this.createUserUseCase.execute(name, email, password, role);
-        
         if (user) {
           // Generate a JWT token
           const token = jwt.sign({ userId: user.id }, "your-secret-key");
@@ -59,12 +58,6 @@ class UserController {
           res.status(401).json({ error: "Invalid email or password" });
         }
       }
-
-
-
-
-
-
 
       // res.status(201).json(user);
     } catch (error) {
@@ -125,6 +118,13 @@ class UserController {
       console.error("Error during login:", error);
       res.status(500).json({ error: "Internal server error" });
     }
+  }
+
+  async logout(req: Request, res: Response): Promise<void> {
+    res.clearCookie("jwt-user"); // Replace with the actual name of your JWT cookie
+    res.send({
+      message: "Logout successful",
+    });
   }
 
   // Implement other user-related route handlers such as getUserHandler, updateUserHandler, and deleteUserHandler here

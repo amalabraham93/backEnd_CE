@@ -70,6 +70,13 @@ class organizerController {
       res.status(500).json({ error: "Internal server error" });
     }
   }
+
+  async logout(req: Request, res: Response):  Promise<void> {
+    res.clearCookie("jwt-organizer"); // Replace with the actual name of your JWT cookie
+    res.send({
+      message: "Logout successful",
+    });
+  }
 }
 
 export default organizerController;

@@ -6,7 +6,7 @@ interface ConferenceRepository {
     create(conference: Conference): Promise<Conference>;
     update(conference: Conference): Promise<Conference>;
     delete(conference: Conference): Promise<Conference>;
-    getById(_id: Types.ObjectId): Promise<Conference | null>;
+    getById(id: string): Promise<Conference | null>;
     getAll(): Promise<Conference[]>;
     getByOrganizerId(organizations: Types.ObjectId): Promise<Conference[]>;
 }
