@@ -9,5 +9,6 @@ interface ConferenceRepository {
     getById(id: string): Promise<Conference | null>;
     getAll(): Promise<Conference[]>;
     getByOrganizerId(organizations: Types.ObjectId): Promise<Conference[]>;
+    registerConfUser(userId:string,confId:string): Promise<void |null>;
 }
 export default ConferenceRepository

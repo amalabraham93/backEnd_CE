@@ -113,5 +113,5 @@
     "app.ts",
     "domain/**/*.ts",
     "infrastructure/**/*.ts"
-  ]
+, "domain/usecases/conference"  ]
 }

@@ -9,14 +9,15 @@ class Conference{
     private organizations :Types.ObjectId
     //  private location :string
     //  private  type : string
-    //  private users:string[]
+     private users:string[]
      
 
 
     constructor( name:string, startDate:Date,
         // enddate:Date,
         organizations:Types.ObjectId,
-        // location:string,type:string,users:string[]
+        // location:string,type:string,
+         users:string[]=[]
         ){
         this.id = new ObjectId()
         this.name = name
@@ -25,7 +26,7 @@ class Conference{
         this.organizations = organizations
         // this.location = location
         // this.type = type
-        // this.users = users
+        this.users = users
 
     }
     

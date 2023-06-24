@@ -1,7 +1,7 @@
 import express from 'express';
 import AdminController from '../controllers/adminController';
 import MongooseAdminRepository from '../../infrastructure/database/repositories/mongooseAdminRepository';
-import CreateAdminUseCase from '../../domain/usecases/createAdmin';
+import CreateAdminUseCase from '../../domain/usecases/admin/createAdmin';
 
 const adminRouter = express.Router();
 const adminRepository = new MongooseAdminRepository()

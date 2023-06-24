@@ -1,8 +1,9 @@
-import mongoose from "mongoose";
+import mongoose, { ObjectId, Schema } from "mongoose";
 import User from "../../../domain/entities/user";
 import UserRepository from "../../../domain/repositories/userRepository";
 
 const UserSchema = new mongoose.Schema({
+  
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
@@ -28,20 +29,25 @@ class MongooseUserRepository implements UserRepository {
   }
 
   async createVerificationToken(userId: string, token: string): Promise<void> {
+    console.log(userId,token);
+    
     await UserModel.findByIdAndUpdate(userId, {
       verificationToken: token,
     }).exec();
   }
 
   async findUserByVerificationToken(token: string): Promise<User | null> {
+    console.log('asdasdasdasd');
+    
     const foundUser = await UserModel.findOne({
       verificationToken: token,
     }).exec();
+    
     return foundUser ? foundUser.toObject() : null;
   }
 
-  async markEmailAsVerified(userId: string): Promise<void> {
-    await UserModel.findByIdAndUpdate(userId, { isEmailVerified: true }).exec();
+  async markEmailAsVerified(_id: string): Promise<void> {
+    await UserModel.findByIdAndUpdate(_id, { isEmailVerified: true }).exec();
   }
 
   async getUserById(id: string): Promise<User | null> {

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import CreateOrganizer from 'domain/usecases/createOrganizer';
+import CreateOrganizer from 'domain/usecases/organizer/createOrganizer';
 import OrganizerRepository from 'domain/repositories/organizerRepository';
-import LoginOrganizerUseCase from 'domain/usecases/loginOrganizer';
+import LoginOrganizerUseCase from 'domain/usecases/organizer/loginOrganizer';
 import jwt, { JwtPayload } from "jsonwebtoken";
 
 

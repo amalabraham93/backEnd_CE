@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
-import CreateUserUseCase from "../../domain/usecases/createUser";
-import UserRepository from "domain/repositories/userRepository";
-import LoginUseCase from "../../domain/usecases/loginUser";
-import VerifyEmailUseCase from "../../domain/usecases/VerifyEmailUseCase";
+import CreateUserUseCase from "../../domain/usecases/users/createUser";
+import UserRepository from "../../domain/repositories/userRepository";
+import LoginUseCase from "../../domain/usecases/users/loginUser";
+import VerifyEmailUseCase from "../../domain/usecases/users/VerifyEmailUseCase";
 import jwt from "jsonwebtoken";
+import { ObjectId } from "mongodb";
 
 class UserController {
   private createUserUseCase: CreateUserUseCase;
@@ -47,7 +48,7 @@ class UserController {
 
         if (user) {
           // Generate a JWT token
-          const token = jwt.sign({ userId: user.id }, "your-secret-key");
+          const token = jwt.sign({ userId: user._id }, "your-secret-key");
           res.cookie("jwt-user", token, {
             httpOnly: true,
             maxAge: 24 * 60 * 60 * 1000,
@@ -69,11 +70,14 @@ class UserController {
   async verifyEmailHandler(req: Request, res: Response): Promise<void> {
     try {
       const { token } = req.params;
-
+      console.log(token,'ghjsdgbdagsdba');
+      
       const user = await this.userRepository.findUserByVerificationToken(token);
-
+     console.log(user);
+     
+       
       if (user) {
-        await this.verifyEmailUseCase.execute(user.id);
+        await this.verifyEmailUseCase.execute(user._id);
         // Email verified successfully
         // Send response...
       } else {
@@ -104,7 +108,7 @@ class UserController {
 
       if (user) {
         // Generate a JWT token
-        const token = jwt.sign({ userId: user.id }, "your-secret-key");
+        const token = jwt.sign({ userId: user._id }, "your-secret-key");
         res.cookie("jwt-user", token, {
           httpOnly: true,
           maxAge: 24 * 60 * 60 * 1000,
@@ -125,6 +129,23 @@ class UserController {
     res.send({
       message: "Logout successful",
     });
+  }
+
+  async active (req: Request, res: Response): Promise<any>{
+    try {
+      const cookie = req.cookies['jwt-user']
+      console.log(cookie);
+      
+    const claims = jwt.verify(cookie,"your-secret-key")
+    if (!claims) {
+      return res.json({unauthenticated:true})
+    }else{
+      return res.json({authenticated:true})
+    }
+    } catch (error) {
+      return res.json({unauthenticated:true})
+    }
+   
   }
 
   // Implement other user-related route handlers such as getUserHandler, updateUserHandler, and deleteUserHandler here

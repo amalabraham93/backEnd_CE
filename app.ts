@@ -6,6 +6,7 @@ import DatabaseConnection from './infrastructure/database/connection';
 import dotenv from 'dotenv';
 import cors from 'cors'
 import cookieParser from 'cookie-parser';
+// import confereceRouter from './infrastructure/routes/conference';
 
 
 dotenv.config();
@@ -41,6 +42,8 @@ databaseConnection.connect()
 
     // Admin Routes
     app.use('/admins', adminRouter);
+    //conference
+    // app.use('/conference', confereceRouter);
 
     // Start the server
     app.listen(port, () => {

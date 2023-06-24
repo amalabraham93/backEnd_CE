@@ -53,7 +53,10 @@ class MongooseConferenceRepository implements ConferenceRepository{
         const conferences = await ConferenceModel.find({ organizations: organizations }).exec();
         return conferences.map(conference => conference.toObject());
       }
-
+  async registerConfUser(userId: string, confId: string): Promise<void |null> {
+      const conference = await ConferenceModel.findByIdAndUpdate(confId,{users:userId})
+      return conference? conference.toObject() : null;
+  }
       
 }
 
