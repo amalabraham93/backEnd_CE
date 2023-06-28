@@ -14,16 +14,16 @@ class ConferenceController {
   private getAllConfByOrg: GetAllConfByOrgUseCase;
   private getConfById: GetConfByIdUseCase;
   private getAllConf: GetAllConfUseCase;
-  private resgisterConfUser:RegisterConfUserUseCase;
+  private resgisterConfUser: RegisterConfUserUseCase;
   private userRepository!: UserRepository;
-  
+
   constructor(
     createConference: CreateConferenceUseCase,
     getAllConfByOrg: GetAllConfByOrgUseCase,
     getConfById: GetConfByIdUseCase,
     getAllConf: GetAllConfUseCase,
-    resgisterConfUser:RegisterConfUserUseCase,
-     userRepository: UserRepository,
+    resgisterConfUser: RegisterConfUserUseCase,
+    userRepository: UserRepository,
 
   ) {
     this.createConference = createConference;
@@ -31,10 +31,10 @@ class ConferenceController {
     this.getConfById = getConfById;
     this.getAllConf = getAllConf;
     this.resgisterConfUser = resgisterConfUser
-     this.userRepository = userRepository
+    this.userRepository = userRepository
     this.CreateConferenceHandler = this.CreateConferenceHandler.bind(this);
     this.getConferencesByOrganizerIdHandler =
-    this.getConferencesByOrganizerIdHandler.bind(this);
+      this.getConferencesByOrganizerIdHandler.bind(this);
     this.getConfByIdHandler = this.getConfByIdHandler.bind(this);
     this.getAllConferenceHandler = this.getAllConferenceHandler.bind(this);
     this.registerConfUserHandler = this.registerConfUserHandler.bind(this)
@@ -110,25 +110,25 @@ class ConferenceController {
     }
   }
 
-  async registerConfUserHandler(req:Request,res:Response): Promise<void>{
-   
-    
+  async registerConfUserHandler(req: Request, res: Response): Promise<void> {
+
+
     try {
-      const {fullName , email} = req.body;
-      console.log(fullName , email);
-      
-      
-      const {id} = req.params
+      const { fullName, email } = req.body;
+      console.log(fullName, email);
+
+
+      const { id } = req.params
       const findUser = await this.userRepository.getUserByEmail(email);
 
       const userId = findUser?._id
 
-      const user = await this.resgisterConfUser.execute(userId,id)
-      res.status(200).json({user})
+      const user = await this.resgisterConfUser.execute(userId, id)
+      res.status(200).json({ user })
     } catch (error) {
       console.log(error);
       res.status(500).json({ message: "Error registering user" });
-      
+
     }
   }
 }

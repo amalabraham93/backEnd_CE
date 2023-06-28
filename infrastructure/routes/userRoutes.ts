@@ -29,6 +29,7 @@ userRouter.post('/logout', userController.logout);
 userRouter.get('/active', userController.active);
 
 
+userRouter.get('/get-user-by-id', userController.getUserByIdHandler);
 userRouter.get('/getusers', userController.getAllUsersHandler);
 userRouter.get('/verify/:token', userController.verifyEmailHandler);
 

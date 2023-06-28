@@ -11,6 +11,10 @@ import GetConfByIdUseCase from '../../domain/usecases/conference/getConfById';
 import GetAllConfUseCase from '../../domain/usecases/conference/getAllConferences';
 import RegisterConfUserUseCase from '../../domain/usecases/conference/registerConfUser';
 import MongooseUserRepository from '../../infrastructure/database/repositories/mongooseUserRepository';
+import MongoosePaperRepository from '../../infrastructure/database/repositories/mongoosePaperRepository';
+import CreatePaperUseCase from '../../domain/usecases/paper/createPaper';
+import PaperController from '../../infrastructure/controllers/paperController';
+import GetByIdUseCase from '../../domain/usecases/paper/getByConfId';
 
 const organizerRouter = express.Router();
 
@@ -29,12 +33,23 @@ const getConferencesByOrganizerId = new GetAllConfByOrgUseCase(conferenceReposit
 const getConferenceById =  new GetConfByIdUseCase(conferenceRepository)
 const getAllConference = new GetAllConfUseCase (conferenceRepository)
 const registerConfUse = new RegisterConfUserUseCase(conferenceRepository)
-
 const conferenceController = new ConferenceController(createConference,getConferencesByOrganizerId, getConferenceById,getAllConference,registerConfUse,useRepository)
+
+//papers
+const userRepository = new MongooseUserRepository();
+const paperRepository = new MongoosePaperRepository()
+const createPaper = new CreatePaperUseCase(paperRepository)
+const getPaperrByConfId = new GetByIdUseCase(paperRepository)
+const paperController = new PaperController(createPaper, paperRepository, userRepository,getPaperrByConfId)
+
+
+
+
+
+
 
 // POST /organizers
 organizerRouter.post('/signup', organizerController.createOrganizerHandler);
-
 organizerRouter.post('/login', organizerController.loginHandler);
 organizerRouter.post('/logout', organizerController.logout);
 
@@ -45,10 +60,12 @@ organizerRouter.post('/create-conference', conferenceController.CreateConference
 organizerRouter.get('/conferences', conferenceController.getConferencesByOrganizerIdHandler);
 organizerRouter.get('/conferences/:confId', conferenceController.getConfByIdHandler);
 organizerRouter.get('/get-all-conferences', conferenceController.getAllConferenceHandler);
-organizerRouter.post('/conferece/register/:id', conferenceController.registerConfUserHandler);
+organizerRouter.post('/conference/register/:id', conferenceController.registerConfUserHandler);
 
 
-
+//paper
+organizerRouter.post('/conference/:confId/paper-submit',paperController.createPaperHandler)
+organizerRouter.get('/conference/:confId/getpaper',paperController.getPaperByConfIdHandler)
 
 
 

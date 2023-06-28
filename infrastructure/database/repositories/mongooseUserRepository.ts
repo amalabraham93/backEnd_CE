@@ -50,8 +50,11 @@ class MongooseUserRepository implements UserRepository {
     await UserModel.findByIdAndUpdate(_id, { isEmailVerified: true }).exec();
   }
 
-  async getUserById(id: string): Promise<User | null> {
-    const foundUser = await UserModel.findById(id).exec();
+  async getUserById(_id: any): Promise<User | null> {
+       
+    console.log(_id,'hhhhhhhhh');
+    
+    const foundUser = await UserModel.findById(_id).exec();
     return foundUser ? foundUser.toObject() : null;
   }
 

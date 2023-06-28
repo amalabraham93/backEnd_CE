@@ -5,6 +5,7 @@ import LoginUseCase from "../../domain/usecases/users/loginUser";
 import VerifyEmailUseCase from "../../domain/usecases/users/VerifyEmailUseCase";
 import jwt from "jsonwebtoken";
 import { ObjectId } from "mongodb";
+import { Types } from "mongoose";
 
 class UserController {
   private createUserUseCase: CreateUserUseCase;
@@ -22,9 +23,13 @@ class UserController {
     this.createUserUseCase = createUserUseCase;
     this.userRepository = userRepository;
     this.verifyEmailUseCase = verifyEmailUseCase;
+    
+
     this.createUserHandler = this.createUserHandler.bind(this);
     this.getAllUsersHandler = this.getAllUsersHandler.bind(this);
     this.loginHandler = this.loginHandler.bind(this);
+    this.active =this.active.bind(this);
+    this.getUserByIdHandler =this.getUserByIdHandler.bind(this);
   }
 
   async createUserHandler(req: Request, res: Response): Promise<void> {
@@ -105,7 +110,8 @@ class UserController {
 
       // Perform login using the LoginUseCase
       const user = await this.loginUseCase.execute(email, password);
-
+      console.log(user!._id);
+      
       if (user) {
         // Generate a JWT token
         const token = jwt.sign({ userId: user._id }, "your-secret-key");
@@ -131,22 +137,49 @@ class UserController {
     });
   }
 
-  async active (req: Request, res: Response): Promise<any>{
+  async active(req: Request, res: Response): Promise<any> {
     try {
-      const cookie = req.cookies['jwt-user']
-      console.log(cookie);
+     
+      const cookie = req.cookies['jwt-user'];
+      const claims: jwt.JwtPayload = jwt.verify(cookie, "your-secret-key") as jwt.JwtPayload;
       
-    const claims = jwt.verify(cookie,"your-secret-key")
-    if (!claims) {
-      return res.json({unauthenticated:true})
-    }else{
-      return res.json({authenticated:true})
-    }
+      const userId = claims.userId; // Convert the userId to string
+      const user = await this.userRepository.getUserById(userId)
+        
+
+      if (!claims) {
+        return res.json({ unauthenticated: true });
+      } else {
+        console.log(userId);
+        return res.json({ authenticated: true,user });
+      }
     } catch (error) {
-      return res.json({unauthenticated:true})
+      return res.json({ unauthenticated: true });
     }
-   
   }
+
+  async getUserByIdHandler(req: Request, res: Response): Promise<any> {
+    try {
+      const cookie = req.cookies['jwt-user'];
+      const claims: jwt.JwtPayload = jwt.verify(cookie, "your-secret-key") as jwt.JwtPayload;
+      const userId = claims.userId.toString(); // Convert the userId to string
+  
+      if (!claims) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+  
+      const user = await this.userRepository.getUserById(userId);
+  
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+  
+      return res.json({ user });
+    } catch (error) {
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  }  
+
 
   // Implement other user-related route handlers such as getUserHandler, updateUserHandler, and deleteUserHandler here
 }
