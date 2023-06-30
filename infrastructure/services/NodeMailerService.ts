@@ -36,7 +36,7 @@ class NodeMailerService implements EmailService {
         <h2>Hi.</h2>
         <h4>You are officially In ✔</h4>
         <p style="margin-bottom: 30px;">Please click on the following link to verify your email</p>
-        <a href = http://localhost:5000/users/verify/${verificationToken} >LINK</a>
+        <a  >CODE:${verificationToken}</a>
    </div>`
     };
 
@@ -48,6 +48,38 @@ class NodeMailerService implements EmailService {
       }
   }
       )
+  }
+
+
+
+
+
+  async sendReviewerEmail(email: string, password: string, conferencelink: string): Promise<void> {
+    const transporter = nodemailer.createTransport({
+      host: "sandbox.smtp.mailtrap.io",
+      port: 2525,
+      auth: {
+        user: "9623e3ae453490",
+        pass: "06e7218ba3f1bf",
+      },
+    });
+
+    const mailOptions = {
+      from: "amalabraham93@yahoo.com",
+      to: email,
+      subject: "Conference Reviewer Invitation",
+      html: `
+        <div class="container" style="max-width: 90%; margin: auto; padding-top: 20px">
+          <h2>Conference Reviewer Invitation</h2>
+          <p>You have been invited to be a reviewer for a conference. Please find the details below:</p>
+          
+          <p>Auto-generated Password: ${password}</p>
+          <p>Click the following link to access the conference papers: <a href="${conferencelink}">Conference Papers</a></p>
+        </div>
+      `,
+    };
+
+    await transporter.sendMail(mailOptions);
   }
 }
 

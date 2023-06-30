@@ -15,6 +15,8 @@ import MongoosePaperRepository from '../../infrastructure/database/repositories/
 import CreatePaperUseCase from '../../domain/usecases/paper/createPaper';
 import PaperController from '../../infrastructure/controllers/paperController';
 import GetByIdUseCase from '../../domain/usecases/paper/getByConfId';
+import AddReviewerUseCase from '../../domain/usecases/conference/addReviewer';
+import NodeMailerService from '../../infrastructure/services/NodeMailerService';
 
 const organizerRouter = express.Router();
 
@@ -28,12 +30,14 @@ const organizerController = new OrganizerController(createOrganizer,loginOrganiz
 
 //conference
 const conferenceRepository = new MongooseConferenceRepository()
+const emailService =  new NodeMailerService()
 const createConference = new CreateConferenceUseCase(conferenceRepository)
 const getConferencesByOrganizerId = new GetAllConfByOrgUseCase(conferenceRepository);
 const getConferenceById =  new GetConfByIdUseCase(conferenceRepository)
 const getAllConference = new GetAllConfUseCase (conferenceRepository)
 const registerConfUse = new RegisterConfUserUseCase(conferenceRepository)
-const conferenceController = new ConferenceController(createConference,getConferencesByOrganizerId, getConferenceById,getAllConference,registerConfUse,useRepository)
+const addReviewer = new AddReviewerUseCase(conferenceRepository,emailService)
+const conferenceController = new ConferenceController(createConference,getConferencesByOrganizerId, getConferenceById,getAllConference,registerConfUse,useRepository,addReviewer)
 
 //papers
 const userRepository = new MongooseUserRepository();
@@ -61,6 +65,7 @@ organizerRouter.get('/conferences', conferenceController.getConferencesByOrganiz
 organizerRouter.get('/conferences/:confId', conferenceController.getConfByIdHandler);
 organizerRouter.get('/get-all-conferences', conferenceController.getAllConferenceHandler);
 organizerRouter.post('/conference/register/:id', conferenceController.registerConfUserHandler);
+organizerRouter.post('/conference/add-reviewer', conferenceController.registerConfUserHandler);
 
 
 //paper

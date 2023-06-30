@@ -2,7 +2,7 @@ import { Types } from "mongoose";
 
 import Conference from "../../entities/conference";
 import ConferenceRepository from "../../repositories/conferenceRepository";
-import { ObjectId } from "mongodb";
+import { ObjectId } from "mongoose"; 
 
 class GetConfByIdUseCase {
   private conferenceRepository: ConferenceRepository;
@@ -10,7 +10,7 @@ class GetConfByIdUseCase {
     this.conferenceRepository = conferenceRepository;
   }
 
-  async execute(id:string): Promise<Conference | null > {
+  async execute(id:Types.ObjectId): Promise<Conference | null > {
      
     
     const getConfById = this.conferenceRepository.getById(id);

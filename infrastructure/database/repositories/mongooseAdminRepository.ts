@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { ObjectId } from 'mongoose';
 import Admin from 'domain/entities/admin';
 import AdminRepository from 'domain/repositories/adminRepository';
 
@@ -16,7 +16,7 @@ class MongooseAdminRepository implements AdminRepository {
     return createdAdmin.toObject();
   }
 
-  async getAdminById(id: string): Promise<Admin | null> {
+  async getAdminById(id: ObjectId): Promise<Admin | null> {
     const foundAdmin = await AdminModel.findById(id).exec();
     return foundAdmin ? foundAdmin.toObject() : null;
   }
@@ -33,7 +33,7 @@ class MongooseAdminRepository implements AdminRepository {
   //   return updatedAdmin ? updatedAdmin.toObject() : null;
   // }
 
-  async deleteAdmin(id: string): Promise<void> {
+  async deleteAdmin(id: ObjectId): Promise<void> {
     await AdminModel.findByIdAndDelete(id).exec();
   }
 }

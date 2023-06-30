@@ -1,5 +1,7 @@
+import { ObjectId } from "mongoose";
+
 class User {
-  public _id!: any;
+  public _id!:ObjectId;
   private name: string;
   public email: string;
   public password: string;
@@ -15,7 +17,7 @@ class User {
     this.verificationToken = verificationToken;
   }
 
-  getId(): any{
+  getId(): ObjectId{
     return this._id;
   }
 

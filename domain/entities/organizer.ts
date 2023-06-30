@@ -1,17 +1,19 @@
+import { ObjectId } from "mongoose";
+
 class Organizer {
-    public id: string;
+    public id!: ObjectId;
     private organizername: string;
     private email: string;
     public password: string;
   
-    constructor(id: string, name: string, email: string, password: string) {
-      this.id = id;
+    constructor( name: string, email: string, password: string) {
+      
       this.organizername = name;
       this.email = email;
       this.password = password;
     }
   
-    getId(): string {
+    getId(): ObjectId {
       return this.id;
     }
   

@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongoose';
 import UserRepository from '../../repositories/userRepository';
 
 class VerifyEmailUseCase {
@@ -7,7 +8,7 @@ class VerifyEmailUseCase {
     this.userRepository = userRepository;
   }
 
-  async execute(id: string): Promise<void> {
+  async execute(id: ObjectId): Promise<void> {
     await this.userRepository.markEmailAsVerified(id);
   }
 }

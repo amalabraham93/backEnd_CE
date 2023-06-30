@@ -1,14 +1,15 @@
-import { Types } from "mongoose";
+import { ObjectId, Types } from "mongoose";
 import Conference from "../../domain/entities/conference";
-import { ObjectId } from "mongodb";
+
 
 interface ConferenceRepository {
     create(conference: Conference): Promise<Conference>;
     update(conference: Conference): Promise<Conference>;
     delete(conference: Conference): Promise<Conference>;
-    getById(id: string): Promise<Conference | null>;
+    getById(id: Types.ObjectId): Promise<Conference | null>;
     getAll(): Promise<Conference[]>;
     getByOrganizerId(organizations: Types.ObjectId): Promise<Conference[]>;
-    registerConfUser(userId:string,confId:string): Promise<void |null>;
+    registerConfUser(userId:ObjectId,confId:string): Promise<void >;
+    addReviewer(email:string,id:string,password:string): Promise<void>;
 }
 export default ConferenceRepository

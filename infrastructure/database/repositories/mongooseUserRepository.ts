@@ -1,59 +1,49 @@
-import mongoose, { ObjectId, Schema } from "mongoose";
+import mongoose, { ObjectId } from "mongoose";
 import User from "../../../domain/entities/user";
 import UserRepository from "../../../domain/repositories/userRepository";
 
 const UserSchema = new mongoose.Schema({
-  
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   role: {
     type: String,
     enum: ["author", "attendee"],
-    require: true,
+    required: true,
   },
   verificationToken: { type: String },
   isEmailVerified: { type: Boolean, default: false },
 });
 
-const UserModel = mongoose.model("user", UserSchema);
+const UserModel = mongoose.model<User>("user", UserSchema);
 
 
 
 
 class MongooseUserRepository implements UserRepository {
   async createUser(user: User): Promise<User> {
-    console.log(user);
     const createdUser = await UserModel.create(user);
     return createdUser.toObject();
   }
 
-  async createVerificationToken(userId: string, token: string): Promise<void> {
-    console.log(userId,token);
-    
+  async createVerificationToken(userId: ObjectId, token: string): Promise<void> {
     await UserModel.findByIdAndUpdate(userId, {
       verificationToken: token,
     }).exec();
   }
 
   async findUserByVerificationToken(token: string): Promise<User | null> {
-    console.log('asdasdasdasd');
-    
     const foundUser = await UserModel.findOne({
       verificationToken: token,
     }).exec();
-    
     return foundUser ? foundUser.toObject() : null;
   }
 
-  async markEmailAsVerified(_id: string): Promise<void> {
+  async markEmailAsVerified(_id: ObjectId): Promise<void> {
     await UserModel.findByIdAndUpdate(_id, { isEmailVerified: true }).exec();
   }
 
-  async getUserById(_id: any): Promise<User | null> {
-       
-    console.log(_id,'hhhhhhhhh');
-    
+  async getUserById(_id: ObjectId): Promise<User | null> {
     const foundUser = await UserModel.findById(_id).exec();
     return foundUser ? foundUser.toObject() : null;
   }
@@ -63,12 +53,6 @@ class MongooseUserRepository implements UserRepository {
     return foundUser ? foundUser.toObject() : null;
   }
 
-  // async updateUser(user: User): Promise<User | null> {
-  //   const updatedUser = await UserModel.findByIdAndUpdate(user.id, user.toObject(), {
-  //     new: true,
-  //   }).exec();
-  //   return updatedUser ? updatedUser.toObject() : null;
-  // }
   async getAllUsers(): Promise<User[]> {
     const users = await UserModel.find({}).exec();
     return users.map((user) => user.toObject());
@@ -82,9 +66,17 @@ class MongooseUserRepository implements UserRepository {
     return foundUser ? foundUser.toObject() : null;
   }
 
-  async deleteUser(id: string): Promise<void> {
+  async deleteUser(id: ObjectId): Promise<void> {
     await UserModel.findByIdAndDelete(id).exec();
   }
 }
 
 export default MongooseUserRepository;
+
+
+    // async updateUser(user: User): Promise<User | null> {
+    //   const updatedUser = await UserModel.findByIdAndUpdate(user.id, user.toObject(), {
+    //     new: true,
+    //   }).exec();
+    //   return updatedUser ? updatedUser.toObject() : null;
+    // }

@@ -14,7 +14,7 @@ class CreateOrganizerUseCase {
     // ...
     const newPass = await bcrypt.hash(password, 10)
     // Create a new organizer entity
-    const newOrganizer = new Organizer('', organizername, email, newPass);
+    const newOrganizer = new Organizer( organizername, email, newPass);
 
     // Save the organizer to the database
     const createdOrganizer = await this.organizerRepository.createOrganizer(newOrganizer);

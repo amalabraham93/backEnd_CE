@@ -1,8 +1,8 @@
 import mongoose, { Types } from "mongoose";
 import Conference from "domain/entities/conference";
 import ConferenceRepository from "domain/repositories/conferenceRepository";
-import { Schema } from "mongoose";
-import { ObjectId } from "mongodb";
+import { Schema ,ObjectId} from "mongoose";
+
 
 
 const ConferenceSchema = new mongoose.Schema({
@@ -13,7 +13,11 @@ const ConferenceSchema = new mongoose.Schema({
     location: { type: String },
     type: { type: String },
     users: [{ type: Schema.Types.ObjectId, ref: 'user' }],
-    banner: { type: String, default: 'unsplash_6vajp0pscx0.jpeg' }
+    banner: { type: String, default: 'unsplash_6vajp0pscx0.jpeg' },
+    reviewers: [{
+        email: { type: String },
+        password: { type: String }
+    }]
 });
 
 const ConferenceModel = mongoose.model("Conference", ConferenceSchema);
@@ -33,7 +37,7 @@ class MongooseConferenceRepository implements ConferenceRepository {
 
 
 
-    async getById(id: string): Promise<Conference | null> {
+    async getById(id: Types.ObjectId): Promise<Conference | null> {
 
         const conference = await ConferenceModel.findById(id).populate('users').exec();
         return conference ? conference.toObject() : null;
@@ -43,7 +47,7 @@ class MongooseConferenceRepository implements ConferenceRepository {
 
     async getAll(): Promise<Conference[]> {
 
-        const conferences = await ConferenceModel.find({}).limit(4)
+        const conferences = await ConferenceModel.find({}).limit(10)
 
 
         return conferences.map(conference => conference.toObject());
@@ -53,9 +57,13 @@ class MongooseConferenceRepository implements ConferenceRepository {
         const conferences = await ConferenceModel.find({ organizations: organizations }).exec();
         return conferences.map(conference => conference.toObject());
     }
-    async registerConfUser(userId: string, confId: string): Promise<void | null> {
+    async registerConfUser(userId: ObjectId, confId: string): Promise<void > {
         const conference = await ConferenceModel.findByIdAndUpdate(confId,{$push: { users: userId }})
-        return conference ? conference.toObject() : null;
+        return  conference!.toObject();
+    }
+
+    async addReviewer(email: string,confId: string,password: string): Promise<void> {
+        const addReviewer = await ConferenceModel.findByIdAndUpdate(confId,{$push:{reviewers:{email:email,password:password}}})
     }
 
 }

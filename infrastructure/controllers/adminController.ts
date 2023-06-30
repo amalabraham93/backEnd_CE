@@ -10,11 +10,11 @@ class AdminController {
 
   async createAdminHandler(req: Request, res: Response): Promise<void> {
     try {
-      const { name, email, password } = req.body;
+      const { name, email, password,role } = req.body;
 
       // Validate the input data here if needed
 
-      const admin = await this.createAdmin.execute( name, email, password );
+      const admin = await this.createAdmin.execute( name, email, password ,role);
 
       res.status(201).json(admin);
     } catch (error) {

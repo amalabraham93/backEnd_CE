@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { ObjectId } from 'mongoose';
 import Organizer from 'domain/entities/organizer';
 import OrganizerRepository from 'domain/repositories/organizerRepository';
 
@@ -17,7 +17,7 @@ class MongooseOrganizerRepository implements OrganizerRepository {
     return createdOrganizer.toObject();
   }
 
-  async getOrganizerById(id: string): Promise<Organizer | null> {
+  async getOrganizerById(id: ObjectId): Promise<Organizer | null> {
     const foundOrganizer = await OrganizerModel.findById(id).exec();
     return foundOrganizer ? foundOrganizer.toObject() : null;
   }
@@ -36,7 +36,7 @@ class MongooseOrganizerRepository implements OrganizerRepository {
   //   return updatedOrganizer ? updatedOrganizer.toObject() : null;
   // }
 
-  async deleteOrganizer(id: string): Promise<void> {
+  async deleteOrganizer(id: ObjectId): Promise<void> {
     await OrganizerModel.findByIdAndDelete(id).exec();
   }
 }

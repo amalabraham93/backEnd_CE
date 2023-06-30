@@ -1,3 +1,4 @@
+import { ObjectId } from "mongoose"
 import { Date, Types } from "mongoose"
 
 class Paper {
@@ -9,9 +10,9 @@ class Paper {
     private affliation:string
     private date:Date
     private conference:Types.ObjectId
-    private users:Types.ObjectId[]
+    private users:ObjectId[]
     
-    constructor(name:string,submissionTitle:string,abstract:string,author:string[],affliation:string,date:Date,conference:Types.ObjectId,users:Types.ObjectId[]) {
+    constructor(name:string,submissionTitle:string,abstract:string,author:string[],affliation:string,date:Date,conference:Types.ObjectId,users:ObjectId[]) {
         this.name = name
         this.submissionTitle = submissionTitle
         this.abstract = abstract
@@ -52,7 +53,7 @@ class Paper {
     return this.conference
   }
   
-  getUsers():Types.ObjectId[]{
+  getUsers():ObjectId[]{
     return this.users
   }
   

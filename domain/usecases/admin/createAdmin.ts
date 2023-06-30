@@ -8,12 +8,12 @@ class CreateAdminUseCase {
     this.adminRepository = adminRepository;
   }
 
-  async execute(name: string, email: string, role: string): Promise<Admin> {
+  async execute(name: string, email: string,password: string, role: string): Promise<Admin> {
     // Validate inputs
     // ...
 
     // Create a new admin entity
-    const newAdmin = new Admin('', name, email, role);
+    const newAdmin = new Admin( name, email,password, role);
 
     // Save the admin to the database
     const createdAdmin = await this.adminRepository.createAdmin(newAdmin);

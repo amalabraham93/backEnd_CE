@@ -8,6 +8,7 @@ import { Types } from "mongoose";
 import GetAllConfUseCase from "../../domain/usecases/conference/getAllConferences";
 import RegisterConfUserUseCase from "../../domain/usecases/conference/registerConfUser";
 import UserRepository from "../../domain/repositories/userRepository";
+import AddReviewerUseCase from "domain/usecases/conference/addReviewer";
 
 class ConferenceController {
   private createConference: CreateConferenceUseCase;
@@ -16,6 +17,7 @@ class ConferenceController {
   private getAllConf: GetAllConfUseCase;
   private resgisterConfUser: RegisterConfUserUseCase;
   private userRepository!: UserRepository;
+  private addReviewer: AddReviewerUseCase;
 
   constructor(
     createConference: CreateConferenceUseCase,
@@ -24,6 +26,7 @@ class ConferenceController {
     getAllConf: GetAllConfUseCase,
     resgisterConfUser: RegisterConfUserUseCase,
     userRepository: UserRepository,
+    addReviewer: AddReviewerUseCase
 
   ) {
     this.createConference = createConference;
@@ -31,6 +34,7 @@ class ConferenceController {
     this.getConfById = getConfById;
     this.getAllConf = getAllConf;
     this.resgisterConfUser = resgisterConfUser
+    this.addReviewer = addReviewer
     this.userRepository = userRepository
     this.CreateConferenceHandler = this.CreateConferenceHandler.bind(this);
     this.getConferencesByOrganizerIdHandler =
@@ -82,7 +86,7 @@ class ConferenceController {
   }
 
   async getConfByIdHandler(req: Request, res: Response): Promise<void> {
-    const { confId } = req.params;
+    const  confId  = new Types.ObjectId(req.params.confId);
 
     console.log(confId);
 
@@ -123,12 +127,42 @@ class ConferenceController {
 
       const userId = findUser?._id
 
-      const user = await this.resgisterConfUser.execute(userId, id)
+      const user = await this.resgisterConfUser.execute(userId!, id)
       res.status(200).json({ user })
     } catch (error) {
       console.log(error);
       res.status(500).json({ message: "Error registering user" });
 
+    }
+  }
+
+  async addReviewerHandler(req: Request, res: Response): Promise<void> {
+    try {
+      const { email, confId } = req.body;
+      console.log(email,confId);
+       
+
+      function generateRandomPassword(length: number = 8): string {
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let password = '';
+        
+        for (let i = 0; i < length; i++) {
+          const randomIndex = Math.floor(Math.random() * characters.length);
+          password += characters.charAt(randomIndex);
+        }
+        
+        return password;
+      }
+
+    const password = generateRandomPassword();
+
+
+      const addReviewer = await this.addReviewer.execute(email, confId,password);
+
+    
+      res.status(200).json({ message: "Reviewer added successfully" });
+    } catch (error) {
+      res.status(500).json({ message: "Error adding reviewer" });
     }
   }
 }

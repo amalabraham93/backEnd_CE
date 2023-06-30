@@ -1,3 +1,4 @@
+import { ObjectId } from "mongoose";
 import ConferenceRepository from "../../repositories/conferenceRepository";
 
 class RegisterConfUserUseCase {
@@ -6,7 +7,7 @@ class RegisterConfUserUseCase {
     this.conferenceRepository = conferenceRepository;
   }
 
-  async execute(userId: string, confId: string): Promise<void |null> {
+  async execute(userId: ObjectId, confId: string): Promise<void > {
     const registeredConfUser = this.conferenceRepository.registerConfUser(
       userId,
       confId

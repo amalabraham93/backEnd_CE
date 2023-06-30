@@ -1,5 +1,6 @@
 import Paper from "../../../domain/entities/paper";
 import PaperRepository from "domain/repositories/paperRepository";
+import { ObjectId } from "mongoose";
 import { Date, Types } from "mongoose";
 
 class CreatePaperUseCase {
@@ -12,7 +13,7 @@ class CreatePaperUseCase {
     async execute(
         name: string,
         submissionTitle:string,
-        users: Types.ObjectId[],
+        users: ObjectId[],
         author: string[],
         affliation: string,
         conference: Types.ObjectId,

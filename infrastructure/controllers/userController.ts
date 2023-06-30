@@ -23,19 +23,16 @@ class UserController {
     this.createUserUseCase = createUserUseCase;
     this.userRepository = userRepository;
     this.verifyEmailUseCase = verifyEmailUseCase;
-    
 
     this.createUserHandler = this.createUserHandler.bind(this);
     this.getAllUsersHandler = this.getAllUsersHandler.bind(this);
     this.loginHandler = this.loginHandler.bind(this);
-    this.active =this.active.bind(this);
-    this.getUserByIdHandler =this.getUserByIdHandler.bind(this);
+    this.active = this.active.bind(this);
+    this.getUserByIdHandler = this.getUserByIdHandler.bind(this);
   }
 
   async createUserHandler(req: Request, res: Response): Promise<void> {
     try {
-      console.log(req.body);
-
       const { name, email, password, role } = req.body;
       // Validate the input data here if needed
 
@@ -75,12 +72,10 @@ class UserController {
   async verifyEmailHandler(req: Request, res: Response): Promise<void> {
     try {
       const { token } = req.params;
-      console.log(token,'ghjsdgbdagsdba');
-      
+      console.log(token, "ghjsdgbdagsdba");
+
       const user = await this.userRepository.findUserByVerificationToken(token);
-     console.log(user);
-     
-       
+
       if (user) {
         await this.verifyEmailUseCase.execute(user._id);
         // Email verified successfully
@@ -110,8 +105,8 @@ class UserController {
 
       // Perform login using the LoginUseCase
       const user = await this.loginUseCase.execute(email, password);
-      console.log(user!._id);
-      
+
+     
       if (user) {
         // Generate a JWT token
         const token = jwt.sign({ userId: user._id }, "your-secret-key");
@@ -131,7 +126,7 @@ class UserController {
   }
 
   async logout(req: Request, res: Response): Promise<void> {
-    res.clearCookie("jwt-user"); // Replace with the actual name of your JWT cookie
+    res.clearCookie("jwt-user"); 
     res.send({
       message: "Logout successful",
     });
@@ -139,19 +134,19 @@ class UserController {
 
   async active(req: Request, res: Response): Promise<any> {
     try {
-     
-      const cookie = req.cookies['jwt-user'];
-      const claims: jwt.JwtPayload = jwt.verify(cookie, "your-secret-key") as jwt.JwtPayload;
-      
-      const userId = claims.userId; // Convert the userId to string
-      const user = await this.userRepository.getUserById(userId)
-        
+      const cookie = req.cookies["jwt-user"];
+      const claims: jwt.JwtPayload = jwt.verify(
+        cookie,
+        "your-secret-key"
+      ) as jwt.JwtPayload;
+
+      const userId = claims.userId;
+      const user = await this.userRepository.getUserById(userId);
 
       if (!claims) {
         return res.json({ unauthenticated: true });
       } else {
-        console.log(userId);
-        return res.json({ authenticated: true,user });
+        return res.json({ authenticated: true, user });
       }
     } catch (error) {
       return res.json({ unauthenticated: true });
@@ -160,28 +155,30 @@ class UserController {
 
   async getUserByIdHandler(req: Request, res: Response): Promise<any> {
     try {
-      const cookie = req.cookies['jwt-user'];
-      const claims: jwt.JwtPayload = jwt.verify(cookie, "your-secret-key") as jwt.JwtPayload;
+      const cookie = req.cookies["jwt-user"];
+      const claims: jwt.JwtPayload = jwt.verify(
+        cookie,
+        "your-secret-key"
+      ) as jwt.JwtPayload;
       const userId = claims.userId.toString(); // Convert the userId to string
-  
+
       if (!claims) {
-        return res.status(401).json({ error: 'Unauthorized' });
+        return res.status(401).json({ error: "Unauthorized" });
       }
-  
+
       const user = await this.userRepository.getUserById(userId);
-  
+
       if (!user) {
-        return res.status(404).json({ error: 'User not found' });
+        return res.status(404).json({ error: "User not found" });
       }
-  
+
       return res.json({ user });
     } catch (error) {
-      return res.status(500).json({ error: 'Internal server error' });
+      return res.status(500).json({ error: "Internal server error" });
     }
-  }  
+  }
 
 
-  // Implement other user-related route handlers such as getUserHandler, updateUserHandler, and deleteUserHandler here
 }
 
 export default UserController;

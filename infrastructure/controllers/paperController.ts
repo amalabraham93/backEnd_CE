@@ -2,8 +2,7 @@ import { Request, Response } from "express";
 import CreatePaperUseCase from "../../domain/usecases/paper/createPaper";
 import PaperRepository from "../../domain/repositories/paperRepository";
 import UserRepository from "../../domain/repositories/userRepository";
-import { ObjectId } from "mongodb";
-import { Types } from "mongoose";
+import { Types,ObjectId } from "mongoose";
 import GetByIdUseCase from "../../domain/usecases/paper/getByConfId";
 
 class PaperController {
@@ -45,12 +44,12 @@ class PaperController {
         res.status(404).json({ message: "User not found" });
         return;
       }
-
+      const users = [user._id]
       // Create the paper
       const newPaper = await this.createPaper.execute(
         name,
         submissionTitle,
-        user._id,
+        users,
         userId,
         affiliation,
         confId,
