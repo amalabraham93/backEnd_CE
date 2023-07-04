@@ -1,12 +1,13 @@
-import { ObjectId } from "mongoose"
-import { Date, Types } from "mongoose"
+import { ObjectId, Types } from "mongoose"
+import { Date } from "mongoose"
 
 class Paper {
+    private id!:ObjectId
     private name:string
     private submissionTitle:string
     private abstract:string
     private author: string[]
-    private approved:boolean
+    private approved!:boolean
     private affliation:string
     private date:Date
     private conference:Types.ObjectId
@@ -17,7 +18,7 @@ class Paper {
         this.submissionTitle = submissionTitle
         this.abstract = abstract
         this.author = author
-        this.approved = false
+        // this.approved = null
         this.affliation= affliation
         this.date = date
         this.conference = conference

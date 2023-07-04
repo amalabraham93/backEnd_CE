@@ -6,30 +6,41 @@ import { Types,ObjectId } from "mongoose";
 import GetByIdUseCase from "../../domain/usecases/paper/getByConfId";
 import jwt from "jsonwebtoken";
 import GetByUserIdUseCase from "'../../domain/usecases/paper/getByUserId";
+import GetPaperByIdUseCase from "../../domain/usecases/paper/getById";
+import updateAproovedUseCase from "domain/usecases/paper/updateApproved";
 
 class PaperController {
   private createPaper: CreatePaperUseCase;
   private paperRepository: PaperRepository;
   private userRepository: UserRepository;
   private getPaperByConfId:GetByIdUseCase
-  private getPaperByUserId:GetByUserIdUseCase
+  private getPaperByUserId:GetByUserIdUseCase;
+  private getPaperById: GetPaperByIdUseCase;
+  private updateAccepted:updateAproovedUseCase
 
   constructor(
     createPaper: CreatePaperUseCase,
     paperRepository: PaperRepository,
     userRepository: UserRepository,
     getPaperByConfId:GetByIdUseCase,
-    getPaperByUserId:GetByUserIdUseCase
+    getPaperByUserId:GetByUserIdUseCase,
+    getPaperById: GetPaperByIdUseCase,
+    updateAccepted:updateAproovedUseCase
 
   ) {
     this.createPaper = createPaper;
     this.paperRepository = paperRepository;
     this.userRepository = userRepository;
     this.getPaperByConfId = getPaperByConfId
-     this.getPaperByUserId = getPaperByUserId
+     this.getPaperByUserId = getPaperByUserId;
+     this.getPaperById = getPaperById;
+     this.updateAccepted = updateAccepted
     this.createPaperHandler = this.createPaperHandler.bind(this);
     this.getPaperByConfIdHandler = this.getPaperByConfIdHandler.bind(this);
     this.getPaperByUserIdHandler = this.getPaperByUserIdHandler.bind(this);
+    this.getPaperByIdHandler = this.getPaperByIdHandler.bind(this);
+    this.updateAcceptedHandler= this.updateAcceptedHandler.bind(this);
+
   }
 
   async createPaperHandler(req: Request, res: Response): Promise<void> {
@@ -97,6 +108,36 @@ class PaperController {
       
       res.status(200).json({paper})
     } catch (error) {
+      res.status(500).json({ message: "Error retrieving conferences by  ID" })
+    }
+  }
+  async getPaperByIdHandler(req: Request, res: Response): Promise<void> {
+    try {
+        const paperId  = new Types.ObjectId(req.params.paperId)
+         
+        
+      
+      const paper = await this.getPaperById.execute(paperId)
+      
+      
+      res.status(200).json({paper})
+    } catch (error) {
+      
+      res.status(500).json({ message: "Error retrieving conferences by  ID" })
+    }
+  }
+  async updateAcceptedHandler(req: Request, res: Response): Promise<void> {
+    try {
+        const paperId  = new Types.ObjectId(req.params.paperId)
+         const approved = req.body.approved
+        
+      
+      const paper = await this.updateAccepted.execute(paperId,approved)
+      
+      
+      res.status(200).json({paper})
+    } catch (error) {
+      
       res.status(500).json({ message: "Error retrieving conferences by  ID" })
     }
   }

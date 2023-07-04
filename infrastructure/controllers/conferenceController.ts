@@ -137,7 +137,8 @@ class ConferenceController {
   async getAllConferenceHandler(req: Request, res: Response) {
     try {
       const conferences = await this.getAllConf.execute();
-
+    
+      
       res.status(200).json({ conferences });
     } catch (error) {
       console.log(error);

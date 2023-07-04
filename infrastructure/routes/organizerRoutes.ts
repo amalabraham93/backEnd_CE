@@ -20,6 +20,8 @@ import NodeMailerService from '../../infrastructure/services/NodeMailerService';
 import ReviewerLoginUseCase from '../../domain/usecases/conference/reviewerLogin';
 import GetConfByUserUseCase from '../../domain/usecases/conference/getByUserId';
 import GetByUserIdUseCase from '../../domain/usecases/paper/getByUserId';
+import GetPaperByIdUseCase from '../../domain/usecases/paper/getById';
+import UpdateAproovedUseCase from '../../domain/usecases/paper/updateApproved';
 
 const organizerRouter = express.Router();
 
@@ -50,7 +52,9 @@ const paperRepository = new MongoosePaperRepository()
 const createPaper = new CreatePaperUseCase(paperRepository)
 const getPaperrByConfId = new GetByIdUseCase(paperRepository)
 const getPaperByUserId = new GetByUserIdUseCase(paperRepository)
-const paperController = new PaperController(createPaper, paperRepository, userRepository,getPaperrByConfId,getPaperByUserId)
+const getPaperById = new GetPaperByIdUseCase(paperRepository)
+const updateAccepted = new UpdateAproovedUseCase (paperRepository)
+const paperController = new PaperController(createPaper, paperRepository, userRepository,getPaperrByConfId,getPaperByUserId,getPaperById,updateAccepted)
 
 
 
@@ -80,6 +84,9 @@ organizerRouter.get('/conference/users-conf', conferenceController.getConference
 organizerRouter.post('/conference/:confId/paper-submit',paperController.createPaperHandler)
 organizerRouter.get('/conference/:confId/getpaper',paperController.getPaperByConfIdHandler)
 organizerRouter.get('/conference/getpaper-user',paperController.getPaperByUserIdHandler)
+organizerRouter.get('/conference/getpaperbyid/:paperId',paperController.getPaperByIdHandler)
+organizerRouter.post('/conference/updategetpaperbyid/:paperId',paperController.updateAcceptedHandler)
+
 
 
 
