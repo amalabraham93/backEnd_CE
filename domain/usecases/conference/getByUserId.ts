@@ -1,19 +1,19 @@
 import { ObjectId, Types } from "mongoose";
+
+import Conference from "../../entities/conference";
 import ConferenceRepository from "../../repositories/conferenceRepository";
 
-class RegisterConfUserUseCase {
+class GetConfByUserUseCase {
   private conferenceRepository: ConferenceRepository;
   constructor(conferenceRepository: ConferenceRepository) {
     this.conferenceRepository = conferenceRepository;
   }
 
-  async execute(userId: ObjectId, confId: Types.ObjectId): Promise<void > {
-    const registeredConfUser = this.conferenceRepository.registerConfUser(
-      userId,
-      confId
-    );
+  async execute(userId:ObjectId): Promise<Conference[]> {
 
-    return registeredConfUser;
+    const getAllConfByOrg = this.conferenceRepository.getByUserId(userId);
+
+    return getAllConfByOrg;
   }
 }
-export default RegisterConfUserUseCase;
+export default GetConfByUserUseCase;

@@ -19,7 +19,6 @@ const UserModel = mongoose.model<User>("user", UserSchema);
 
 
 
-
 class MongooseUserRepository implements UserRepository {
   async createUser(user: User): Promise<User> {
     const createdUser = await UserModel.create(user);

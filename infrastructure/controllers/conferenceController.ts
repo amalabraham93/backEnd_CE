@@ -8,7 +8,9 @@ import { Types } from "mongoose";
 import GetAllConfUseCase from "../../domain/usecases/conference/getAllConferences";
 import RegisterConfUserUseCase from "../../domain/usecases/conference/registerConfUser";
 import UserRepository from "../../domain/repositories/userRepository";
-import AddReviewerUseCase from "domain/usecases/conference/addReviewer";
+import AddReviewerUseCase from "../../domain/usecases/conference/addReviewer";
+import ReviewerLoginUseCase from "../../domain/usecases/conference/reviewerLogin";
+import GetConfByUserUseCase from "../../domain/usecases/conference/getByUserId";
 
 class ConferenceController {
   private createConference: CreateConferenceUseCase;
@@ -18,6 +20,8 @@ class ConferenceController {
   private resgisterConfUser: RegisterConfUserUseCase;
   private userRepository!: UserRepository;
   private addReviewer: AddReviewerUseCase;
+  private reviewerLogin:ReviewerLoginUseCase;
+  private getConfByUserId:GetConfByUserUseCase;
 
   constructor(
     createConference: CreateConferenceUseCase,
@@ -26,22 +30,28 @@ class ConferenceController {
     getAllConf: GetAllConfUseCase,
     resgisterConfUser: RegisterConfUserUseCase,
     userRepository: UserRepository,
-    addReviewer: AddReviewerUseCase
-
+    addReviewer: AddReviewerUseCase,
+    reviewerLogin:ReviewerLoginUseCase,
+    getConfByUserId:GetConfByUserUseCase
   ) {
     this.createConference = createConference;
     this.getAllConfByOrg = getAllConfByOrg;
     this.getConfById = getConfById;
     this.getAllConf = getAllConf;
-    this.resgisterConfUser = resgisterConfUser
-    this.addReviewer = addReviewer
-    this.userRepository = userRepository
+    this.resgisterConfUser = resgisterConfUser;
+    this.addReviewer = addReviewer;
+    this.userRepository = userRepository;
+    this.reviewerLogin = reviewerLogin;
+    this.getConfByUserId = getConfByUserId;
     this.CreateConferenceHandler = this.CreateConferenceHandler.bind(this);
     this.getConferencesByOrganizerIdHandler =
       this.getConferencesByOrganizerIdHandler.bind(this);
     this.getConfByIdHandler = this.getConfByIdHandler.bind(this);
     this.getAllConferenceHandler = this.getAllConferenceHandler.bind(this);
-    this.registerConfUserHandler = this.registerConfUserHandler.bind(this)
+    this.registerConfUserHandler = this.registerConfUserHandler.bind(this);
+    this.addReviewerHandler = this.addReviewerHandler.bind(this);
+    this.reviewerLoginHandler = this.reviewerLoginHandler.bind(this);
+    this.getConferencesByUserIdHandler = this.getConferencesByUserIdHandler.bind(this);
   }
 
   async CreateConferenceHandler(req: Request, res: Response): Promise<void> {
@@ -84,11 +94,33 @@ class ConferenceController {
         .json({ message: "Error retrieving conferences by organizer ID" });
     }
   }
+ 
+  async getConferencesByUserIdHandler( req: Request,res: Response): Promise<void> {
+    // const { organizerId } = req.params;
+   
+    const cookie = req.cookies["jwt-user"];
+    const claims = jwt.verify(cookie, "your-secret-key") as JwtPayload;
+    const userId = claims.userId;
+    
+    
+    try {
+      const conferences = await this.getConfByUserId.execute(userId);
+      res.status(200).json({ conferences });
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: "Error retrieving conferences by organizer ID" });
+    }
+  }
 
   async getConfByIdHandler(req: Request, res: Response): Promise<void> {
-    const  confId  = new Types.ObjectId(req.params.confId);
+    
+    
+    
+    const paramId = req.params.confId
+    
+    const confId = new Types.ObjectId(paramId);
 
-    console.log(confId);
 
     try {
       const conferences = await this.getConfById.execute(confId);
@@ -115,56 +147,74 @@ class ConferenceController {
   }
 
   async registerConfUserHandler(req: Request, res: Response): Promise<void> {
-
-
     try {
       const { fullName, email } = req.body;
       console.log(fullName, email);
 
-
-      const { id } = req.params
+      const id  = new Types.ObjectId(req.params.id);
       const findUser = await this.userRepository.getUserByEmail(email);
 
-      const userId = findUser?._id
+      const userId = findUser?._id;
 
-      const user = await this.resgisterConfUser.execute(userId!, id)
-      res.status(200).json({ user })
+      const user = await this.resgisterConfUser.execute(userId!, id);
+      res.status(200).json({ user });
     } catch (error) {
       console.log(error);
       res.status(500).json({ message: "Error registering user" });
-
     }
   }
 
   async addReviewerHandler(req: Request, res: Response): Promise<void> {
     try {
-      const { email, confId } = req.body;
-      console.log(email,confId);
-       
-
+      const { email} = req.body;
+        const confId = new Types.ObjectId(req.body.confId)
       function generateRandomPassword(length: number = 8): string {
-        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        let password = '';
-        
+        const characters =
+          "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        let password = "";
+
         for (let i = 0; i < length; i++) {
           const randomIndex = Math.floor(Math.random() * characters.length);
           password += characters.charAt(randomIndex);
         }
-        
+
         return password;
       }
 
-    const password = generateRandomPassword();
+      const password = generateRandomPassword();
 
+      const addReviewer = await this.addReviewer.execute(
+        email,
+        confId,
+        password
+      );
 
-      const addReviewer = await this.addReviewer.execute(email, confId,password);
-
-    
       res.status(200).json({ message: "Reviewer added successfully" });
     } catch (error) {
       res.status(500).json({ message: "Error adding reviewer" });
     }
   }
+
+
+  async reviewerLoginHandler(req: Request, res: Response): Promise<void> {
+    try {
+      const { rEmail, rPassword } = req.body;
+      const confId = new Types.ObjectId(req.body.confId)
+      // Call the reviewer login use case or repository method
+      await this.reviewerLogin.execute(rEmail,confId, rPassword);
+
+      // Reviewer login successful
+      // Perform necessary actions (e.g., generate authentication token, set cookies, etc.)
+      res.status(200).json({ message: "Reviewer login successful" });
+    } catch (error) {
+      // Reviewer login failed
+      // Perform necessary error handling
+      res.status(500).json({ message: "Reviewer login failed" });
+    }
+  }
+  
+
+
 }
 
 export default ConferenceController;

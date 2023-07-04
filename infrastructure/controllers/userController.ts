@@ -29,6 +29,7 @@ class UserController {
     this.loginHandler = this.loginHandler.bind(this);
     this.active = this.active.bind(this);
     this.getUserByIdHandler = this.getUserByIdHandler.bind(this);
+    this.verifyEmailHandler= this.verifyEmailHandler.bind(this);
   }
 
   async createUserHandler(req: Request, res: Response): Promise<void> {
@@ -75,14 +76,15 @@ class UserController {
       console.log(token, "ghjsdgbdagsdba");
 
       const user = await this.userRepository.findUserByVerificationToken(token);
-
+      console.log(user);
+      
       if (user) {
         await this.verifyEmailUseCase.execute(user._id);
-        // Email verified successfully
+        res.status(200).json({ verified:true });
         // Send response...
       } else {
         // Invalid verification token
-        // Send response...
+        res.status(401).json({ error: "token is not valid" });
       }
     } catch (error) {
       // Handle error...

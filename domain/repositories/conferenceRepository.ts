@@ -9,7 +9,9 @@ interface ConferenceRepository {
     getById(id: Types.ObjectId): Promise<Conference | null>;
     getAll(): Promise<Conference[]>;
     getByOrganizerId(organizations: Types.ObjectId): Promise<Conference[]>;
-    registerConfUser(userId:ObjectId,confId:string): Promise<void >;
-    addReviewer(email:string,id:string,password:string): Promise<void>;
+    registerConfUser(userId:ObjectId,confId:Types.ObjectId): Promise<void >;
+    addReviewer(email:string,id:Types.ObjectId,password:string): Promise<void>;
+    reviewerLogin(rEmail:string,confId:Types.ObjectId,rPassword:string):Promise<void>;
+    getByUserId(userId:ObjectId): Promise<Conference[]>;
 }
 export default ConferenceRepository

@@ -8,6 +8,6 @@ interface PaperRepository {
     getById(id:string): Promise<Paper | null>;
     getAll():Promise<Paper[]>;
     getByConferenceId(conferenceId:Types.ObjectId):Promise<Paper[]>;
-    getByUserId(userId:Types.ObjectId):Promise<Paper>;
+    getByUserId(userEmail:string):Promise<Paper[]>;
 }
 export default PaperRepository

@@ -1,5 +1,5 @@
-import Paper from "domain/entities/paper";
-import PaperRepository from "domain/repositories/paperRepository";
+import Paper from "'../../domain/entities/paper";
+import PaperRepository from "'../../domain/repositories/paperRepository";
 import mongoose, { Schema, Document } from "mongoose";
 
 interface IPaperModel extends Document, Paper {}
@@ -43,8 +43,9 @@ class MongoosePaperRepository implements PaperRepository {
     return papers.map(paper => paper.toObject()) as Paper[];
   }
 
-  getByUserId(userId: mongoose.Types.ObjectId): Promise<Paper> {
-    throw new Error("Method not implemented.");
+  async getByUserId(userId: string): Promise<Paper[]> {
+    const papers = await PaperModel.find({ author: userId }).exec();
+    return papers.map(paper => paper.toObject()) as Paper[];
   }
 }
 

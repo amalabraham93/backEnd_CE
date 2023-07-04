@@ -57,15 +57,27 @@ class MongooseConferenceRepository implements ConferenceRepository {
         const conferences = await ConferenceModel.find({ organizations: organizations }).exec();
         return conferences.map(conference => conference.toObject());
     }
-    async registerConfUser(userId: ObjectId, confId: string): Promise<void > {
+    async registerConfUser(userId: ObjectId, confId: Types.ObjectId): Promise<void > {
         const conference = await ConferenceModel.findByIdAndUpdate(confId,{$push: { users: userId }})
         return  conference!.toObject();
     }
 
-    async addReviewer(email: string,confId: string,password: string): Promise<void> {
+    async addReviewer(email: string,confId: Types.ObjectId,password: string): Promise<void> {
         const addReviewer = await ConferenceModel.findByIdAndUpdate(confId,{$push:{reviewers:{email:email,password:password}}})
     }
+   async reviewerLogin(rEmail: string,confId:Types.ObjectId, rPassword: string): Promise<void> {
+    const conference = await ConferenceModel.findOne({
+        _id: confId,
+        "reviewers.email": rEmail,
+        "reviewers.password": rPassword,
+    });
+   
+   }
 
+   async getByUserId(userId:ObjectId):Promise<Conference[]>{
+    const conferences = await ConferenceModel.find({ users: userId }).exec();
+    return conferences.map(conference => conference.toObject());
+   }
 }
 
 export default MongooseConferenceRepository

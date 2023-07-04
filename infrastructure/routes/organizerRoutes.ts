@@ -17,6 +17,9 @@ import PaperController from '../../infrastructure/controllers/paperController';
 import GetByIdUseCase from '../../domain/usecases/paper/getByConfId';
 import AddReviewerUseCase from '../../domain/usecases/conference/addReviewer';
 import NodeMailerService from '../../infrastructure/services/NodeMailerService';
+import ReviewerLoginUseCase from '../../domain/usecases/conference/reviewerLogin';
+import GetConfByUserUseCase from '../../domain/usecases/conference/getByUserId';
+import GetByUserIdUseCase from '../../domain/usecases/paper/getByUserId';
 
 const organizerRouter = express.Router();
 
@@ -37,14 +40,17 @@ const getConferenceById =  new GetConfByIdUseCase(conferenceRepository)
 const getAllConference = new GetAllConfUseCase (conferenceRepository)
 const registerConfUse = new RegisterConfUserUseCase(conferenceRepository)
 const addReviewer = new AddReviewerUseCase(conferenceRepository,emailService)
-const conferenceController = new ConferenceController(createConference,getConferencesByOrganizerId, getConferenceById,getAllConference,registerConfUse,useRepository,addReviewer)
+const reviewerLogin = new ReviewerLoginUseCase(conferenceRepository)
+const getConfByUserId = new GetConfByUserUseCase(conferenceRepository)
+const conferenceController = new ConferenceController(createConference,getConferencesByOrganizerId, getConferenceById,getAllConference,registerConfUse,useRepository,addReviewer,reviewerLogin,getConfByUserId)
 
 //papers
 const userRepository = new MongooseUserRepository();
 const paperRepository = new MongoosePaperRepository()
 const createPaper = new CreatePaperUseCase(paperRepository)
 const getPaperrByConfId = new GetByIdUseCase(paperRepository)
-const paperController = new PaperController(createPaper, paperRepository, userRepository,getPaperrByConfId)
+const getPaperByUserId = new GetByUserIdUseCase(paperRepository)
+const paperController = new PaperController(createPaper, paperRepository, userRepository,getPaperrByConfId,getPaperByUserId)
 
 
 
@@ -65,12 +71,15 @@ organizerRouter.get('/conferences', conferenceController.getConferencesByOrganiz
 organizerRouter.get('/conferences/:confId', conferenceController.getConfByIdHandler);
 organizerRouter.get('/get-all-conferences', conferenceController.getAllConferenceHandler);
 organizerRouter.post('/conference/register/:id', conferenceController.registerConfUserHandler);
-organizerRouter.post('/conference/add-reviewer', conferenceController.registerConfUserHandler);
+organizerRouter.post('/conference/add-reviewer', conferenceController.addReviewerHandler);
+organizerRouter.post('/conference/reviewer-login', conferenceController.reviewerLoginHandler);
+organizerRouter.get('/conference/users-conf', conferenceController.getConferencesByUserIdHandler);
 
 
 //paper
 organizerRouter.post('/conference/:confId/paper-submit',paperController.createPaperHandler)
 organizerRouter.get('/conference/:confId/getpaper',paperController.getPaperByConfIdHandler)
+organizerRouter.get('/conference/getpaper-user',paperController.getPaperByUserIdHandler)
 
 
 
