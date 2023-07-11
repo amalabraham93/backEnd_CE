@@ -57,7 +57,6 @@ class ConferenceController {
   async CreateConferenceHandler(req: Request, res: Response): Promise<void> {
     try {
       const { name, startDate } = req.body;
-      console.log(req.body);
       const cookie = req.cookies["jwt-organizer"];
 
       const claims = jwt.verify(cookie, "your-secret-key") as JwtPayload;
@@ -70,7 +69,6 @@ class ConferenceController {
       );
       res.status(201).json(conference);
     } catch (error) {
-      console.log("Error creating", error);
 
       res.status(500).json(error);
     }
@@ -107,14 +105,13 @@ class ConferenceController {
       const conferences = await this.getConfByUserId.execute(userId);
       res.status(200).json({ conferences });
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: "Error retrieving conferences by organizer ID" });
+      res.status(500).json({ message: "Error retrieving conferences by organizer ID" });
     }
   }
 
   async getConfByIdHandler(req: Request, res: Response): Promise<void> {
     
+    console.log(req.params.confId);
     
     
     const paramId = req.params.confId
@@ -124,7 +121,7 @@ class ConferenceController {
 
     try {
       const conferences = await this.getConfById.execute(confId);
-      console.log("sadasdasasdas", conferences);
+
 
       res.status(200).json({ conferences });
     } catch (error) {
@@ -150,7 +147,7 @@ class ConferenceController {
   async registerConfUserHandler(req: Request, res: Response): Promise<void> {
     try {
       const { fullName, email } = req.body;
-      console.log(fullName, email);
+   
 
       const id  = new Types.ObjectId(req.params.id);
       const findUser = await this.userRepository.getUserByEmail(email);
@@ -160,7 +157,7 @@ class ConferenceController {
       const user = await this.resgisterConfUser.execute(userId!, id);
       res.status(200).json({ user });
     } catch (error) {
-      console.log(error);
+    
       res.status(500).json({ message: "Error registering user" });
     }
   }

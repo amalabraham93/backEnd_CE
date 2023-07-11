@@ -12,7 +12,7 @@ class AddReviewerUseCase{
     }
    async execute(email:string,confId:Types.ObjectId,password:string):Promise<void>{
 
-    console.log(email,confId,password);
+
     
    const addReviewer = this.conferenceRepository.addReviewer(email,confId,password)
     

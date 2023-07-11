@@ -46,16 +46,12 @@ class PaperController {
   async createPaperHandler(req: Request, res: Response): Promise<void> {
     try {
       const { name,submissionTitle, abstract, author, affiliation, userId ,date} = req.body;
-      console.log(req.body);
-      
+    
      
-
-
       const confId = new Types.ObjectId(req.params.confId);
       // Retrieve the user by email or any other identifier
       const user = await this.userRepository.getUserByEmail(userId);
-      console.log(user);
-      
+   
       if (!user) {
         res.status(404).json({ message: "User not found" });
         return;
@@ -75,18 +71,19 @@ class PaperController {
 
       res.status(201).json(newPaper);
     } catch (error) {
-      console.log("Error creating paper", error);
+   
       res.status(500).json(error);
     }
   }
 
 
   async getPaperByConfIdHandler(req: Request, res: Response): Promise<void> {
+    
     try {
+      
       const confId =  new Types.ObjectId(req.params.confId);
       const paper = await this.getPaperByConfId.execute(confId)
-      console.log(paper);
-      
+     
       res.status(200).json({paper})
     } catch (error) {
       res.status(500).json({ message: "Error retrieving conferences by  ID" })
@@ -104,8 +101,7 @@ class PaperController {
       const user = await this.userRepository.getUserById(userId)
       
       const paper = await this.getPaperByUserId.execute(user!.email)
-      console.log(paper);
-      
+    
       res.status(200).json({paper})
     } catch (error) {
       res.status(500).json({ message: "Error retrieving conferences by  ID" })
@@ -115,6 +111,7 @@ class PaperController {
     try {
         const paperId  = new Types.ObjectId(req.params.paperId)
          
+      
         
       
       const paper = await this.getPaperById.execute(paperId)
@@ -128,20 +125,19 @@ class PaperController {
   }
   async updateAcceptedHandler(req: Request, res: Response): Promise<void> {
     try {
-        const paperId  = new Types.ObjectId(req.params.paperId)
-         const approved = req.body.approved
-        
-      
-      const paper = await this.updateAccepted.execute(paperId,approved)
-      
-      
-      res.status(200).json({paper})
+      const paperId = new Types.ObjectId(req.params.paperId);
+      const approved = req.body.approved;
+      const paper = await this.updateAccepted.execute(paperId, approved);
+  
+      if (paper) {
+        res.status(200).json({ paper });
+      } else {
+        res.status(500).json({ message: "Error updating paper" });
+      }
     } catch (error) {
-      
-      res.status(500).json({ message: "Error retrieving conferences by  ID" })
+      res.status(500).json({ message: "Error updating paper" });
     }
   }
-
 
 }
 

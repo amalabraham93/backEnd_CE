@@ -1,4 +1,4 @@
-import User from 'domain/entities/user';
+import User from '../../domain/entities/user';
 import { ObjectId } from 'mongoose';
 
 interface UserRepository {
@@ -8,10 +8,14 @@ interface UserRepository {
   // updateUser(user: User): Promise<User>;
   getAllUsers(): Promise<User[]>;
   deleteUser(_id: ObjectId): Promise<void>;
-  // getUserByEmailAndPassword(email: string, password: string): Promise<User | null>;
+  getUserByEmailAndPassword(
+    email: string,
+    password: string
+  ): Promise<User | null>;
   createVerificationToken(_id: ObjectId, token: string): Promise<void>;
   findUserByVerificationToken(token: string): Promise<User | null>;
   markEmailAsVerified(_id: ObjectId): Promise<void>;
+  makePayment(_id: ObjectId, paymentType: string, conferenceId?:ObjectId | undefined, paperId?: ObjectId | undefined, amount?: number):Promise<void>;
 }
 
 export default UserRepository;

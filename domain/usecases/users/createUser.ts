@@ -23,11 +23,7 @@ class CreateUserUseCase {
 
     // Save the user to the database
     const createdUser = await this.userRepository.createUser(newUser);
-  //  const userId = createdUser
-  console.log(createdUser._id);
-   
-    
-    
+ 
     function generateVerificationToken(): string {
       // Generate a random verification token
       const token = Math.random().toString(36).substr(2);

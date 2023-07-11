@@ -32,8 +32,10 @@ class MongoosePaperRepository implements PaperRepository {
   }
 
   async getById(id: Types.ObjectId): Promise<Paper | null> {
+  
+    const paper = await PaperModel.findById(id).populate('conference').exec();
+   
     
-    const paper = await PaperModel.findById(id).exec();
     return paper ? paper.toObject() : null;
   }
 

@@ -22,6 +22,9 @@ import GetConfByUserUseCase from '../../domain/usecases/conference/getByUserId';
 import GetByUserIdUseCase from '../../domain/usecases/paper/getByUserId';
 import GetPaperByIdUseCase from '../../domain/usecases/paper/getById';
 import UpdateAproovedUseCase from '../../domain/usecases/paper/updateApproved';
+import PresentationController from 'infrastructure/controllers/presentationController';
+import CreatePresentationUseCase from 'domain/usecases/presentation/createPresentation';
+import MongoosePresentationRepository from 'infrastructure/database/repositories/mongoosePresentationRepository';
 
 const organizerRouter = express.Router();
 
@@ -56,8 +59,10 @@ const getPaperById = new GetPaperByIdUseCase(paperRepository)
 const updateAccepted = new UpdateAproovedUseCase (paperRepository)
 const paperController = new PaperController(createPaper, paperRepository, userRepository,getPaperrByConfId,getPaperByUserId,getPaperById,updateAccepted)
 
-
-
+//presentaion
+const presentationRepository = new MongoosePresentationRepository()
+const createPresentation = new CreatePresentationUseCase(presentationRepository)
+const presentaionController = new PresentationController(createPresentation)
 
 
 
@@ -87,7 +92,8 @@ organizerRouter.get('/conference/getpaper-user',paperController.getPaperByUserId
 organizerRouter.get('/conference/getpaperbyid/:paperId',paperController.getPaperByIdHandler)
 organizerRouter.post('/conference/updategetpaperbyid/:paperId',paperController.updateAcceptedHandler)
 
-
+//presentation
+// organizerRouter.get('/presentation', paperController.getPresentationHandler);
 
 
 export default organizerRouter;

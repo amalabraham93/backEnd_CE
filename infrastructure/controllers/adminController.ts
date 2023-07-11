@@ -12,8 +12,6 @@ class AdminController {
     try {
       const { name, email, password,role } = req.body;
 
-      // Validate the input data here if needed
-
       const admin = await this.createAdmin.execute( name, email, password ,role);
 
       res.status(201).json(admin);

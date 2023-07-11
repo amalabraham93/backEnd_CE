@@ -4,7 +4,6 @@ import ConferenceRepository from "domain/repositories/conferenceRepository";
 import { Schema ,ObjectId} from "mongoose";
 
 
-
 const ConferenceSchema = new mongoose.Schema({
     name: { type: String, required: true },
     startDate: { type: Date, required: true },
@@ -17,7 +16,9 @@ const ConferenceSchema = new mongoose.Schema({
     reviewers: [{
         email: { type: String },
         password: { type: String }
-    }]
+    }],
+    paperSubmissionPrice: { type: Number, default: 0 },
+    bookingPrice: { type: Number, default: 0 }
 });
 
 const ConferenceModel = mongoose.model("Conference", ConferenceSchema);
@@ -47,7 +48,7 @@ class MongooseConferenceRepository implements ConferenceRepository {
 
     async getAll(): Promise<Conference[]> {
 
-        const conferences = await ConferenceModel.find({}).limit(10)
+        const conferences = await ConferenceModel.find({}).sort({"startDate":1})
 
 
         return conferences.map(conference => conference.toObject());
