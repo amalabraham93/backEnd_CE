@@ -1,16 +1,18 @@
 import { ObjectId } from "mongodb"
 import { Types } from "mongoose"
+import User from "./user"
+
 
 class Conference{
     private id!:ObjectId
     private name:string
     private startDate :Date
-    //  private enddate : Date
+    private endDate! : Date
     private organizations :Types.ObjectId
     private reviewers: { email: string; password: string }[];
     //  private location :string
     //  private  type : string
-     private users:string[]
+     public users:User[]
      
 
 
@@ -19,7 +21,7 @@ class Conference{
         organizations:Types.ObjectId,
         reviewers: { email: string; password: string }[] = [],
         // location:string,type:string,
-         users:string[]=[]
+         users:User[]=[]
         ){
         
         this.name = name
@@ -40,7 +42,6 @@ class Conference{
         return this.id
     }
     
-
     addReviewer(email: string, password: string): void {
         this.reviewers.push({ email, password });
       }
@@ -49,6 +50,16 @@ class Conference{
         return this.reviewers;
       }
     
-   
+      getUsers(): User[] {
+        return this.users;
+      }
+      
+      getStartDate(){
+        return this.startDate
+      }
+      getEndDate(){
+        return this.endDate
+        
+      }
 }
 export default Conference

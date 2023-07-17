@@ -11,6 +11,7 @@ import UserRepository from "../../domain/repositories/userRepository";
 import AddReviewerUseCase from "../../domain/usecases/conference/addReviewer";
 import ReviewerLoginUseCase from "../../domain/usecases/conference/reviewerLogin";
 import GetConfByUserUseCase from "../../domain/usecases/conference/getByUserId";
+import UpdateConferenceUseCase from "domain/usecases/conference/updateConference";
 
 class ConferenceController {
   private createConference: CreateConferenceUseCase;
@@ -20,8 +21,9 @@ class ConferenceController {
   private resgisterConfUser: RegisterConfUserUseCase;
   private userRepository!: UserRepository;
   private addReviewer: AddReviewerUseCase;
-  private reviewerLogin:ReviewerLoginUseCase;
-  private getConfByUserId:GetConfByUserUseCase;
+  private reviewerLogin: ReviewerLoginUseCase;
+  private getConfByUserId: GetConfByUserUseCase;
+  private updateConference: UpdateConferenceUseCase;
 
   constructor(
     createConference: CreateConferenceUseCase,
@@ -31,8 +33,9 @@ class ConferenceController {
     resgisterConfUser: RegisterConfUserUseCase,
     userRepository: UserRepository,
     addReviewer: AddReviewerUseCase,
-    reviewerLogin:ReviewerLoginUseCase,
-    getConfByUserId:GetConfByUserUseCase
+    reviewerLogin: ReviewerLoginUseCase,
+    getConfByUserId: GetConfByUserUseCase,
+    updateConference: UpdateConferenceUseCase
   ) {
     this.createConference = createConference;
     this.getAllConfByOrg = getAllConfByOrg;
@@ -43,6 +46,7 @@ class ConferenceController {
     this.userRepository = userRepository;
     this.reviewerLogin = reviewerLogin;
     this.getConfByUserId = getConfByUserId;
+    this.updateConference = updateConference;
     this.CreateConferenceHandler = this.CreateConferenceHandler.bind(this);
     this.getConferencesByOrganizerIdHandler =
       this.getConferencesByOrganizerIdHandler.bind(this);
@@ -51,7 +55,10 @@ class ConferenceController {
     this.registerConfUserHandler = this.registerConfUserHandler.bind(this);
     this.addReviewerHandler = this.addReviewerHandler.bind(this);
     this.reviewerLoginHandler = this.reviewerLoginHandler.bind(this);
-    this.getConferencesByUserIdHandler = this.getConferencesByUserIdHandler.bind(this);
+    this.getConferencesByUserIdHandler =
+      this.getConferencesByUserIdHandler.bind(this);
+      this.updateConferenceHandler = this.updateConferenceHandler.bind(this);
+  
   }
 
   async CreateConferenceHandler(req: Request, res: Response): Promise<void> {
@@ -69,7 +76,6 @@ class ConferenceController {
       );
       res.status(201).json(conference);
     } catch (error) {
-
       res.status(500).json(error);
     }
   }
@@ -92,36 +98,34 @@ class ConferenceController {
         .json({ message: "Error retrieving conferences by organizer ID" });
     }
   }
- 
-  async getConferencesByUserIdHandler( req: Request,res: Response): Promise<void> {
+
+  async getConferencesByUserIdHandler(
+    req: Request,
+    res: Response
+  ): Promise<void> {
     // const { organizerId } = req.params;
-   
+
     const cookie = req.cookies["jwt-user"];
     const claims = jwt.verify(cookie, "your-secret-key") as JwtPayload;
     const userId = claims.userId;
-    
-    
+
     try {
       const conferences = await this.getConfByUserId.execute(userId);
       res.status(200).json({ conferences });
     } catch (error) {
-      res.status(500).json({ message: "Error retrieving conferences by organizer ID" });
+      res
+        .status(500)
+        .json({ message: "Error retrieving conferences by organizer ID" });
     }
   }
 
   async getConfByIdHandler(req: Request, res: Response): Promise<void> {
-    
-    console.log(req.params.confId);
-    
-    
-    const paramId = req.params.confId
-    
-    const confId = new Types.ObjectId(paramId);
+    const paramId = req.params.confId;
 
+    const confId = new Types.ObjectId(paramId);
 
     try {
       const conferences = await this.getConfById.execute(confId);
-
 
       res.status(200).json({ conferences });
     } catch (error) {
@@ -134,8 +138,7 @@ class ConferenceController {
   async getAllConferenceHandler(req: Request, res: Response) {
     try {
       const conferences = await this.getAllConf.execute();
-    
-      
+
       res.status(200).json({ conferences });
     } catch (error) {
       console.log(error);
@@ -147,9 +150,8 @@ class ConferenceController {
   async registerConfUserHandler(req: Request, res: Response): Promise<void> {
     try {
       const { fullName, email } = req.body;
-   
 
-      const id  = new Types.ObjectId(req.params.id);
+      const id = new Types.ObjectId(req.params.id);
       const findUser = await this.userRepository.getUserByEmail(email);
 
       const userId = findUser?._id;
@@ -157,15 +159,14 @@ class ConferenceController {
       const user = await this.resgisterConfUser.execute(userId!, id);
       res.status(200).json({ user });
     } catch (error) {
-    
       res.status(500).json({ message: "Error registering user" });
     }
   }
 
   async addReviewerHandler(req: Request, res: Response): Promise<void> {
     try {
-      const { email} = req.body;
-        const confId = new Types.ObjectId(req.body.confId)
+      const { email } = req.body;
+      const confId = new Types.ObjectId(req.body.confId);
       function generateRandomPassword(length: number = 8): string {
         const characters =
           "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -193,13 +194,12 @@ class ConferenceController {
     }
   }
 
-
   async reviewerLoginHandler(req: Request, res: Response): Promise<void> {
     try {
       const { rEmail, rPassword } = req.body;
-      const confId = new Types.ObjectId(req.body.confId)
+      const confId = new Types.ObjectId(req.body.confId);
       // Call the reviewer login use case or repository method
-      await this.reviewerLogin.execute(rEmail,confId, rPassword);
+      await this.reviewerLogin.execute(rEmail, confId, rPassword);
 
       // Reviewer login successful
       // Perform necessary actions (e.g., generate authentication token, set cookies, etc.)
@@ -210,9 +210,24 @@ class ConferenceController {
       res.status(500).json({ message: "Reviewer login failed" });
     }
   }
+
+   async updateConferenceHandler(req: Request, res: Response): Promise<void> {
+    try {
+      const { name, startDate, endDate } = req.body;
+      const id = new Types.ObjectId(req.params.id);
+      const conference = await this.updateConference.execute(
+        id,
+        name,
+        startDate,
+        endDate,
+        
+      );
+      res.status(201).json(conference);
+    } catch (error) {
+      res.status(500).json(error);
+    }
   
-
-
+   }
 }
 
 export default ConferenceController;

@@ -6,13 +6,13 @@ import mongoose, { Schema, Document, ObjectId, Types } from "mongoose";
 
 const PaperSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  submissionTitle:{type:String, required:true},
+  submissionTitle: { type: String, required: true },
   abstract: { type: String, required: true },
   author: [{ type: String }],
-  approved : {type:Boolean,default:null},
+  approved: { type: Boolean, default: null },
   affiliation: { type: String },
   date: { type: Date },
-  conference: { type: Schema.Types.ObjectId, ref: 'Conference' },
+  conference: { type: Schema.Types.ObjectId, ref: "Conference" },
 });
 
 const PaperModel = mongoose.model("Paper", PaperSchema);
@@ -32,10 +32,8 @@ class MongoosePaperRepository implements PaperRepository {
   }
 
   async getById(id: Types.ObjectId): Promise<Paper | null> {
-  
-    const paper = await PaperModel.findById(id).populate('conference').exec();
-   
-    
+    const paper = await PaperModel.findById(id).populate("conference").exec();
+
     return paper ? paper.toObject() : null;
   }
 
@@ -43,19 +41,28 @@ class MongoosePaperRepository implements PaperRepository {
     throw new Error("Method not implemented.");
   }
 
-  async updateAccepted(paperId: Types.ObjectId, approved: boolean): Promise<Paper | null> {
-    const updatedPaper = await PaperModel.findByIdAndUpdate(paperId, { approved }, { new: true }).exec();
+  async updateAccepted(
+    paperId: Types.ObjectId,
+    approved: boolean
+  ): Promise<Paper | null> {
+    const updatedPaper = await PaperModel.findByIdAndUpdate(
+      paperId,
+      { approved },
+      { new: true }
+    ).exec();
     return updatedPaper ? updatedPaper.toObject() : null;
   }
 
-  async getByConferenceId(conference: mongoose.Types.ObjectId): Promise<Paper[]> {
-    const papers = await PaperModel.find({ conference: conference }).exec();
-    return papers.map(paper => paper.toObject()) as Paper[];
+  async getByConferenceId(
+    conference: mongoose.Types.ObjectId
+  ): Promise<Paper[]> {
+    const papers = await PaperModel.find({ conference: conference }).populate("conference").exec();
+    return papers.map((paper) => paper.toObject()) as Paper[];
   }
 
   async getByUserId(userId: string): Promise<Paper[]> {
     const papers = await PaperModel.find({ author: userId }).exec();
-    return papers.map(paper => paper.toObject()) as Paper[];
+    return papers.map((paper) => paper.toObject()) as Paper[];
   }
 }
 

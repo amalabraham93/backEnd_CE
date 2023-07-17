@@ -1,6 +1,6 @@
-import mongoose, { ObjectId } from 'mongoose';
-import Organizer from 'domain/entities/organizer';
-import OrganizerRepository from 'domain/repositories/organizerRepository';
+import mongoose, { ObjectId } from "mongoose";
+import Organizer from "domain/entities/organizer";
+import OrganizerRepository from "domain/repositories/organizerRepository";
 
 const OrganizerSchema = new mongoose.Schema({
   organizername: { type: String, required: true },
@@ -8,10 +8,9 @@ const OrganizerSchema = new mongoose.Schema({
   password: { type: String, required: true },
 });
 
-const OrganizerModel = mongoose.model('organization', OrganizerSchema);
+const OrganizerModel = mongoose.model("organization", OrganizerSchema);
 
 class MongooseOrganizerRepository implements OrganizerRepository {
-
   async createOrganizer(organizer: Organizer): Promise<Organizer> {
     const createdOrganizer = await OrganizerModel.create(organizer);
     return createdOrganizer.toObject();

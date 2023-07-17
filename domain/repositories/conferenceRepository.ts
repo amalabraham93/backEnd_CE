@@ -4,7 +4,7 @@ import Conference from "../../domain/entities/conference";
 
 interface ConferenceRepository {
     create(conference: Conference): Promise<Conference>;
-    update(conference: Conference): Promise<Conference>;
+    update(id: Types.ObjectId,name:string,startDate:Date,endDate:Date): Promise<Conference>;
     delete(conference: Conference): Promise<Conference>;
     getById(id: Types.ObjectId): Promise<Conference | null>;
     getAll(): Promise<Conference[]>;

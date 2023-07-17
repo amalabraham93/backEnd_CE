@@ -1,6 +1,6 @@
-import mongoose, { ObjectId } from 'mongoose';
-import Admin from 'domain/entities/admin';
-import AdminRepository from 'domain/repositories/adminRepository';
+import mongoose, { ObjectId } from "mongoose";
+import Admin from "domain/entities/admin";
+import AdminRepository from "domain/repositories/adminRepository";
 
 const AdminSchema = new mongoose.Schema({
   name: { type: String, required: true },
@@ -8,7 +8,7 @@ const AdminSchema = new mongoose.Schema({
   password: { type: String, required: true },
 });
 
-const AdminModel = mongoose.model('Admin', AdminSchema);
+const AdminModel = mongoose.model("Admin", AdminSchema);
 
 class MongooseAdminRepository implements AdminRepository {
   async createAdmin(admin: Admin): Promise<Admin> {

@@ -13,7 +13,7 @@ class UserController {
   private loginUseCase: LoginUseCase;
   private verifyEmailUseCase: VerifyEmailUseCase;
   private userRepository: UserRepository;
-  private makePayment: MakePaymentUseCase
+  private makePayment: MakePaymentUseCase;
 
   constructor(
     createUserUseCase: CreateUserUseCase,
@@ -32,7 +32,7 @@ class UserController {
     this.loginHandler = this.loginHandler.bind(this);
     this.active = this.active.bind(this);
     this.getUserByIdHandler = this.getUserByIdHandler.bind(this);
-    this.verifyEmailHandler= this.verifyEmailHandler.bind(this);
+    this.verifyEmailHandler = this.verifyEmailHandler.bind(this);
     this.makePaymentHandler = this.makePaymentHandler.bind(this);
   }
 
@@ -59,6 +59,8 @@ class UserController {
           res.cookie("jwt-user", token, {
             httpOnly: true,
             maxAge: 24 * 60 * 60 * 1000,
+            sameSite: "none", // Enable this for cross-site requests
+            secure: true, // Enable this for secure requests (HTTPS)
           });
           // Return the token in the response
           res.status(200).json({ token });
@@ -79,10 +81,10 @@ class UserController {
       const { token } = req.params;
 
       const user = await this.userRepository.findUserByVerificationToken(token);
-      
+
       if (user) {
         await this.verifyEmailUseCase.execute(user._id);
-        res.status(200).json({ verified:true });
+        res.status(200).json({ verified: true });
         // Send response...
       } else {
         // Invalid verification token
@@ -106,29 +108,31 @@ class UserController {
   async loginHandler(req: Request, res: Response): Promise<void> {
     try {
       const { email, password } = req.body;
-  
+
       // Perform login using the LoginUseCase
       const user = await this.loginUseCase.execute(email, password);
-  
+
       if (!user) {
         res.status(401).json({ error: "Invalid email or password" });
         return;
       }
-  
+
       if (!user.isEmailVerified) {
         res.status(401).json({ error: "Email not verified" });
         return;
       }
-  
+
       // Generate a JWT token
       const token = jwt.sign({ userId: user._id }, "your-secret-key");
       res.cookie("jwt-user", token, {
         httpOnly: true,
         maxAge: 24 * 60 * 60 * 1000,
+        sameSite: "none", // Enable this for cross-site requests
+        secure: true, // Enable this for secure requests (HTTPS)
       });
-  
-      // Return the token in the response
       res.status(200).json({ token });
+
+      // Return the token in the response
     } catch (error) {
       console.error("Error during login:", error);
       res.status(500).json({ error: "Internal server error" });
@@ -136,7 +140,7 @@ class UserController {
   }
 
   async logout(req: Request, res: Response): Promise<void> {
-    res.clearCookie("jwt-user"); 
+    res.clearCookie("jwt-user");
     res.send({
       message: "Logout successful",
     });
@@ -190,51 +194,62 @@ class UserController {
 
   async makePaymentHandler(req: Request, res: Response): Promise<any> {
     try {
-      const cookie = req.cookies['jwt-user'];
+      const cookie = req.cookies["jwt-user"];
       const claims: jwt.JwtPayload = jwt.verify(
         cookie,
-        'your-secret-key'
+        "your-secret-key"
       ) as jwt.JwtPayload;
       const userId = claims.userId.toString();
-  
+
       if (!claims) {
-        return res.status(401).json({ error: 'Unauthorized' });
+        return res.status(401).json({ error: "Unauthorized" });
       }
-  
+
       const { paymentData } = req.body;
-      const {  conferenceId, paperId, amount } = paymentData;
+      const { conferenceId, paperId, amount } = paymentData;
       const user = await this.userRepository.getUserById(userId);
-      const paymentType = user!.role
-      
+      const paymentType = user!.role;
+
       if (!user) {
-        return res.status(404).json({ error: 'User not found' });
+        return res.status(404).json({ error: "User not found" });
       }
-  
-      if (user.role === 'author') {
+
+      if (user.role === "author") {
         if (!paperId) {
-          return res.status(400).json({ error: 'Paper ID is required for author payment' });
+          return res
+            .status(400)
+            .json({ error: "Paper ID is required for author payment" });
         }
-        await this.makePayment.execute(userId, paymentType, undefined, paperId, amount);
-      } else if (user.role === 'attendee') {
+        await this.makePayment.execute(
+          userId,
+          paymentType,
+          undefined,
+          paperId,
+          amount
+        );
+      } else if (user.role === "attendee") {
         if (!conferenceId) {
-          return res.status(400).json({ error: 'Conference ID is required for attendee payment' });
+          return res
+            .status(400)
+            .json({ error: "Conference ID is required for attendee payment" });
         }
-        await this.makePayment.execute(userId, paymentType, conferenceId, undefined, amount);
+        await this.makePayment.execute(
+          userId,
+          paymentType,
+          conferenceId,
+          undefined,
+          amount
+        );
       } else {
-        return res.status(400).json({ error: 'Invalid user role' });
+        return res.status(400).json({ error: "Invalid user role" });
       }
-  
+
       return res.json({ success: true });
     } catch (error) {
-      console.error('Error making payment:', error);
-      return res.status(500).json({ error: 'Internal server error' });
+      console.error("Error making payment:", error);
+      return res.status(500).json({ error: "Internal server error" });
     }
   }
-  
-
-
-
-
 }
 
 export default UserController;

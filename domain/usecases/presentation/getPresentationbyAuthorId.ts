@@ -9,14 +9,14 @@ class GetPresentationsByAuthorIdUseCase {
     this.presentationRepository = presentationRepository;
   }
 
-  async execute(authorId: ObjectId): Promise<Presentation[]> {
-    // Retrieve presentations by author ID from the repository
-    const presentations = await this.presentationRepository.getPresentationsByAuthorId(
-      authorId
-    );
+  // async execute(authorId: ObjectId): Promise<Presentation[]> {
+  //   // Retrieve presentations by author ID from the repository
+  //   // const presentations = await this.presentationRepository.getPresentationsByAuthorId(
+  //   //   authorId
+  //   // );
 
-    return presentations;
-  }
+  //   return presentations;
+  // }
 }
 
 export default GetPresentationsByAuthorIdUseCase;

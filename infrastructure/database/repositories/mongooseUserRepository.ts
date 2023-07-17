@@ -13,18 +13,22 @@ const UserSchema = new mongoose.Schema({
   },
   verificationToken: { type: String },
   isEmailVerified: { type: Boolean, default: false },
-  transactions: [{
-    paymentType: { type: String, enum: ["author", "attendee"], required: true },
-    conferenceId: { type: mongoose.Schema.Types.ObjectId, ref: 'Conference' },
-    paperId: { type: mongoose.Schema.Types.ObjectId, ref: 'Paper' },
-    date: { type: Date, default: Date.now },
-    amount: { type: Number, required: true },
-  }],
+  transactions: [
+    {
+      paymentType: {
+        type: String,
+        enum: ["author", "attendee"],
+        required: true,
+      },
+      conferenceId: { type: mongoose.Schema.Types.ObjectId, ref: "Conference" },
+      paperId: { type: mongoose.Schema.Types.ObjectId, ref: "Paper" },
+      date: { type: Date, default: Date.now },
+      amount: { type: Number, required: true },
+    },
+  ],
 });
 
 const UserModel = mongoose.model<User>("user", UserSchema);
-
-
 
 class MongooseUserRepository implements UserRepository {
   async createUser(user: User): Promise<User> {
@@ -32,7 +36,10 @@ class MongooseUserRepository implements UserRepository {
     return createdUser.toObject();
   }
 
-  async createVerificationToken(userId: ObjectId, token: string): Promise<void> {
+  async createVerificationToken(
+    userId: ObjectId,
+    token: string
+  ): Promise<void> {
     await UserModel.findByIdAndUpdate(userId, {
       verificationToken: token,
     }).exec();
@@ -76,23 +83,30 @@ class MongooseUserRepository implements UserRepository {
     await UserModel.findByIdAndDelete(id).exec();
   }
 
-  async makePayment(userId: ObjectId, paymentType: string, conferenceId?: ObjectId | undefined, paperId?: ObjectId | undefined, amount?: number): Promise<void> {
+  async makePayment(
+    userId: ObjectId,
+    paymentType: string,
+    conferenceId?: ObjectId | undefined,
+    paperId?: ObjectId | undefined,
+    amount?: number
+  ): Promise<void> {
     const transaction = {
       paymentType,
       conferenceId,
       paperId,
       amount,
     };
-    await UserModel.findByIdAndUpdate(userId, { $push: { transactions: transaction } }).exec();
+    await UserModel.findByIdAndUpdate(userId, {
+      $push: { transactions: transaction },
+    }).exec();
   }
 }
 
 export default MongooseUserRepository;
 
-
-    // async updateUser(user: User): Promise<User | null> {
-    //   const updatedUser = await UserModel.findByIdAndUpdate(user.id, user.toObject(), {
-    //     new: true,
-    //   }).exec();
-    //   return updatedUser ? updatedUser.toObject() : null;
-    // }
+// async updateUser(user: User): Promise<User | null> {
+//   const updatedUser = await UserModel.findByIdAndUpdate(user.id, user.toObject(), {
+//     new: true,
+//   }).exec();
+//   return updatedUser ? updatedUser.toObject() : null;
+// }
