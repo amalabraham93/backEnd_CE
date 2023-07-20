@@ -138,7 +138,8 @@ class ConferenceController {
     res: Response
   ): Promise<void> {
     const token = req.headers.authorization;
-
+      console.log(token);
+      
     if (!token || !token.startsWith("Bearer ")) {
       res.status(401).json({ error: "Unauthorized" });
       return;
@@ -164,7 +165,7 @@ class ConferenceController {
     }
   }
 
-  
+
 
   async getConfByIdHandler(req: Request, res: Response): Promise<void> {
     const paramId = req.params.confId;

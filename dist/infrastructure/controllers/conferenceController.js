@@ -93,6 +93,7 @@ class ConferenceController {
     }
     async getConferencesByUserIdHandler(req, res) {
         const token = req.headers.authorization;
+        console.log(token);
         if (!token || !token.startsWith("Bearer ")) {
             res.status(401).json({ error: "Unauthorized" });
             return;
