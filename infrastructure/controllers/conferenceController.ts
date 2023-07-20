@@ -25,7 +25,7 @@ class ConferenceController {
   private reviewerLogin: ReviewerLoginUseCase;
   private getConfByUserId: GetConfByUserUseCase;
   private updateConference: UpdateConferenceUseCase;
-  private addSession: AddSessionUseCase;
+  private addSession:AddSessionUseCase;
   constructor(
     createConference: CreateConferenceUseCase,
     getAllConfByOrg: GetAllConfByOrgUseCase,
@@ -37,7 +37,7 @@ class ConferenceController {
     reviewerLogin: ReviewerLoginUseCase,
     getConfByUserId: GetConfByUserUseCase,
     updateConference: UpdateConferenceUseCase,
-    addSession: AddSessionUseCase
+    addSession:AddSessionUseCase
   ) {
     this.createConference = createConference;
     this.getAllConfByOrg = getAllConfByOrg;
@@ -60,8 +60,9 @@ class ConferenceController {
     this.reviewerLoginHandler = this.reviewerLoginHandler.bind(this);
     this.getConferencesByUserIdHandler =
       this.getConferencesByUserIdHandler.bind(this);
-    this.updateConferenceHandler = this.updateConferenceHandler.bind(this);
-    this.addSessionHandler = this.addSessionHandler.bind(this);
+      this.updateConferenceHandler = this.updateConferenceHandler.bind(this);
+      this.addSessionHandler = this.addSessionHandler.bind(this);
+  
   }
 
   async CreateConferenceHandler(req: Request, res: Response): Promise<void> {
@@ -69,21 +70,17 @@ class ConferenceController {
       const { name, startDate } = req.body;
       const token = req.headers.authorization;
 
-      if (!token || !token.startsWith("Bearer ")) {
-        res.status(401).json({ error: "Unauthorized" });
-        return;
-      }
+    if (!token || !token.startsWith('Bearer ')) {
+      res.json({ unauthenticated: true });
+    }
 
-      const tokenWithoutBearer = token.slice(7);
-      let claims: jwt.JwtPayload;
+    const tokenWithoutBearer = token!.slice(7); 
+    const claims: jwt.JwtPayload = jwt.verify(
+      tokenWithoutBearer,
+      "your-secret-key"
+    ) as jwt.JwtPayload;
 
-      try {
-        claims = jwt.verify(tokenWithoutBearer, "your-secret-key") as jwt.JwtPayload;
-      } catch (error) {
-        res.status(401).json({ error: "Invalid token" });
-        return;
-      }
-
+    
       const orgid = claims._id;
 
       const conference = await this.createConference.execute(
@@ -91,81 +88,50 @@ class ConferenceController {
         startDate,
         orgid
       );
-
       res.status(201).json(conference);
     } catch (error) {
-      res.status(500).json({ error: "Internal server error" });
+      res.status(500).json(error);
     }
   }
-
-
 
   async getConferencesByOrganizerIdHandler(
     req: Request,
     res: Response
   ): Promise<void> {
-    const token = req.headers.authorization;
+    // const { organizerId } = req.params;
 
-    if (!token || !token.startsWith("Bearer ")) {
-      res.status(401).json({ error: "Unauthorized" });
-      return;
-    }
-
-    const tokenWithoutBearer = token.slice(7); // Remove the "Bearer " prefix
-    let claims: jwt.JwtPayload;
-
-    try {
-      claims = jwt.verify(tokenWithoutBearer, "your-secret-key") as jwt.JwtPayload;
-    } catch (error) {
-      res.status(401).json({ error: "Invalid token" });
-      return;
-    }
-
+    const cookie = req.headers.authorization;
+    const claims = jwt.verify(cookie!, "your-secret-key") as JwtPayload;
     const orgid = claims._id;
-
     try {
       const conferences = await this.getAllConfByOrg.execute(orgid);
       res.status(200).json({ conferences });
     } catch (error) {
-      res.status(500).json({ message: "Error retrieving conferences by organizer ID" });
+      res
+        .status(500)
+        .json({ message: "Error retrieving conferences by organizer ID" });
     }
   }
-
-
 
   async getConferencesByUserIdHandler(
     req: Request,
     res: Response
   ): Promise<void> {
-    const token = req.headers.authorization;
-      console.log(token);
-      
-    if (!token || !token.startsWith("Bearer ")) {
-      res.status(401).json({ error: "Unauthorized" });
-      return;
-    }
+    // const { organizerId } = req.params;
 
-    const tokenWithoutBearer = token.slice(7); // Remove the "Bearer " prefix
-    let claims: jwt.JwtPayload;
-
-    try {
-      claims = jwt.verify(tokenWithoutBearer, "your-secret-key") as jwt.JwtPayload;
-    } catch (error) {
-      res.status(401).json({ error: "Invalid token" });
-      return;
-    }
-
+    const cookie = req.headers.authorization;
+    const claims = jwt.verify(cookie!, "your-secret-key") as JwtPayload;
     const userId = claims.userId;
 
     try {
       const conferences = await this.getConfByUserId.execute(userId);
       res.status(200).json({ conferences });
     } catch (error) {
-      res.status(500).json({ message: "Error retrieving conferences by organizer ID" });
+      res
+        .status(500)
+        .json({ message: "Error retrieving conferences by organizer ID" });
     }
   }
-
-
 
   async getConfByIdHandler(req: Request, res: Response): Promise<void> {
     const paramId = req.params.confId;
@@ -259,7 +225,7 @@ class ConferenceController {
     }
   }
 
-  async updateConferenceHandler(req: Request, res: Response): Promise<void> {
+   async updateConferenceHandler(req: Request, res: Response): Promise<void> {
     try {
       const { name, startDate, endDate } = req.body;
       const id = new Types.ObjectId(req.params.id);
@@ -267,18 +233,20 @@ class ConferenceController {
         id,
         name,
         startDate,
-        endDate
+        endDate,
+        
       );
       res.status(201).json(conference);
     } catch (error) {
       res.status(500).json(error);
     }
-  }
+  
+   }
 
-  async addSessionHandler(req: Request, res: Response): Promise<void> {
+   async addSessionHandler(req: Request, res: Response): Promise<void> {
     try {
       // Extract data from request body
-      const { sessionDate, session } = req.body;
+      const {  sessionDate, session } = req.body;
       const confId = new Types.ObjectId(req.body.confId);
       // Add the session to the conference using the AddSessionUseCase
       await this.addSession.execute(confId, sessionDate, session);
