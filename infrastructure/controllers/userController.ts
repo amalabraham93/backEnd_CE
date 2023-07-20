@@ -150,7 +150,6 @@ class UserController {
   async active(req: Request, res: Response): Promise<any> {
     try {
       const cookie = req.headers.authorization;
-      console.log(cookie);
       
       const claims: jwt.JwtPayload = jwt.verify(
         cookie!,
@@ -176,15 +175,14 @@ class UserController {
     try {
       const cookie = req.headers.authorization;
 
-      console.log(cookie);
 
       const claims: jwt.JwtPayload = jwt.verify(
         cookie!,
         "your-secret-key"
       ) as jwt.JwtPayload;
 
-      
-      const userId = claims.userId.toString(); // Convert the userId to string
+
+      const userId = claims.userId; // Convert the userId to string
 
       if (!claims) {
         return res.status(401).json({ error: "Unauthorized" });
@@ -209,7 +207,7 @@ class UserController {
         cookie!,
         "your-secret-key"
       ) as jwt.JwtPayload;
-      const userId = claims.userId.toString();
+      const userId = claims.userId;
 
       if (!claims) {
         return res.status(401).json({ error: "Unauthorized" });

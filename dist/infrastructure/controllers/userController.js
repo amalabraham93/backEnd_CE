@@ -124,7 +124,6 @@ class UserController {
     async active(req, res) {
         try {
             const cookie = req.headers.authorization;
-            console.log(cookie);
             const claims = jsonwebtoken_1.default.verify(cookie, "your-secret-key");
             const userId = claims.userId;
             console.log(userId);
@@ -143,9 +142,8 @@ class UserController {
     async getUserByIdHandler(req, res) {
         try {
             const cookie = req.headers.authorization;
-            console.log(cookie);
             const claims = jsonwebtoken_1.default.verify(cookie, "your-secret-key");
-            const userId = claims.userId.toString(); // Convert the userId to string
+            const userId = claims.userId; // Convert the userId to string
             if (!claims) {
                 return res.status(401).json({ error: "Unauthorized" });
             }
@@ -163,7 +161,7 @@ class UserController {
         try {
             const cookie = req.headers.authorization;
             const claims = jsonwebtoken_1.default.verify(cookie, "your-secret-key");
-            const userId = claims.userId.toString();
+            const userId = claims.userId;
             if (!claims) {
                 return res.status(401).json({ error: "Unauthorized" });
             }
