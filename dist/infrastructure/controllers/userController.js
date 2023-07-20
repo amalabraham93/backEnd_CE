@@ -143,6 +143,7 @@ class UserController {
     async getUserByIdHandler(req, res) {
         try {
             const cookie = req.headers.authorization;
+            console.log(cookie);
             const claims = jsonwebtoken_1.default.verify(cookie, "your-secret-key");
             const userId = claims.userId.toString(); // Convert the userId to string
             if (!claims) {

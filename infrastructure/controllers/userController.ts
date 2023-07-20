@@ -175,10 +175,15 @@ class UserController {
   async getUserByIdHandler(req: Request, res: Response): Promise<any> {
     try {
       const cookie = req.headers.authorization;
+
+      console.log(cookie);
+
       const claims: jwt.JwtPayload = jwt.verify(
         cookie!,
         "your-secret-key"
       ) as jwt.JwtPayload;
+
+      
       const userId = claims.userId.toString(); // Convert the userId to string
 
       if (!claims) {
