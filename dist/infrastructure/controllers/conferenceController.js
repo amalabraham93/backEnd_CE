@@ -45,8 +45,12 @@ class ConferenceController {
     async CreateConferenceHandler(req, res) {
         try {
             const { name, startDate } = req.body;
-            const cookie = req.headers.authorization;
-            const claims = jsonwebtoken_1.default.verify(cookie, "your-secret-key");
+            const token = req.headers.authorization;
+            if (!token || !token.startsWith("Bearer ")) {
+                res.json({ unauthenticated: true });
+            }
+            const tokenWithoutBearer = token.slice(7);
+            const claims = jsonwebtoken_1.default.verify(tokenWithoutBearer, "your-secret-key");
             const orgid = claims._id;
             const conference = await this.createConference.execute(name, startDate, orgid);
             res.status(201).json(conference);
@@ -57,8 +61,12 @@ class ConferenceController {
     }
     async getConferencesByOrganizerIdHandler(req, res) {
         // const { organizerId } = req.params;
-        const cookie = req.headers.authorization;
-        const claims = jsonwebtoken_1.default.verify(cookie, "your-secret-key");
+        const token = req.headers.authorization;
+        if (!token || !token.startsWith("Bearer ")) {
+            res.json({ unauthenticated: true });
+        }
+        const tokenWithoutBearer = token.slice(7); // Remove the "Bearer " prefix
+        const claims = jsonwebtoken_1.default.verify(tokenWithoutBearer, "your-secret-key");
         const orgid = claims._id;
         try {
             const conferences = await this.getAllConfByOrg.execute(orgid);
@@ -72,8 +80,12 @@ class ConferenceController {
     }
     async getConferencesByUserIdHandler(req, res) {
         // const { organizerId } = req.params;
-        const cookie = req.headers.authorization;
-        const claims = jsonwebtoken_1.default.verify(cookie, "your-secret-key");
+        const token = req.headers.authorization;
+        if (!token || !token.startsWith("Bearer ")) {
+            res.json({ unauthenticated: true });
+        }
+        const tokenWithoutBearer = token.slice(7); // Remove the "Bearer " prefix
+        const claims = jsonwebtoken_1.default.verify(tokenWithoutBearer, "your-secret-key");
         const userId = claims.userId;
         try {
             const conferences = await this.getConfByUserId.execute(userId);

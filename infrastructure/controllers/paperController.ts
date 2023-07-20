@@ -90,13 +90,21 @@ class PaperController {
       res.status(500).json({ message: "Error retrieving conferences by  ID" });
     }
   }
+
+  
   async getPaperByUserIdHandler(req: Request, res: Response): Promise<void> {
     try {
-      const cookie = req.headers.authorization;
-      const claims: jwt.JwtPayload = jwt.verify(
-        cookie!,
-        "your-secret-key"
-      ) as jwt.JwtPayload;
+      const token = req.headers.authorization;
+
+    if (!token || !token.startsWith('Bearer ')) {
+     res.json({ unauthenticated: true });
+    }
+
+    const tokenWithoutBearer = token!.slice(7); // Remove the "Bearer " prefix
+    const claims: jwt.JwtPayload = jwt.verify(
+      tokenWithoutBearer,
+      "your-secret-key"
+    ) as jwt.JwtPayload;
 
       const userId = claims.userId;
       const user = await this.userRepository.getUserById(userId);

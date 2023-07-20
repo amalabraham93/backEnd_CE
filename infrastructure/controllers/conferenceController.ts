@@ -25,7 +25,7 @@ class ConferenceController {
   private reviewerLogin: ReviewerLoginUseCase;
   private getConfByUserId: GetConfByUserUseCase;
   private updateConference: UpdateConferenceUseCase;
-  private addSession:AddSessionUseCase;
+  private addSession: AddSessionUseCase;
   constructor(
     createConference: CreateConferenceUseCase,
     getAllConfByOrg: GetAllConfByOrgUseCase,
@@ -37,7 +37,7 @@ class ConferenceController {
     reviewerLogin: ReviewerLoginUseCase,
     getConfByUserId: GetConfByUserUseCase,
     updateConference: UpdateConferenceUseCase,
-    addSession:AddSessionUseCase
+    addSession: AddSessionUseCase
   ) {
     this.createConference = createConference;
     this.getAllConfByOrg = getAllConfByOrg;
@@ -60,17 +60,25 @@ class ConferenceController {
     this.reviewerLoginHandler = this.reviewerLoginHandler.bind(this);
     this.getConferencesByUserIdHandler =
       this.getConferencesByUserIdHandler.bind(this);
-      this.updateConferenceHandler = this.updateConferenceHandler.bind(this);
-      this.addSessionHandler = this.addSessionHandler.bind(this);
-  
+    this.updateConferenceHandler = this.updateConferenceHandler.bind(this);
+    this.addSessionHandler = this.addSessionHandler.bind(this);
   }
 
   async CreateConferenceHandler(req: Request, res: Response): Promise<void> {
     try {
       const { name, startDate } = req.body;
-      const cookie = req.headers.authorization;
+      const token = req.headers.authorization;
 
-      const claims = jwt.verify(cookie!, "your-secret-key") as JwtPayload;
+      if (!token || !token.startsWith("Bearer ")) {
+        res.json({ unauthenticated: true });
+      }
+
+      const tokenWithoutBearer = token!.slice(7);
+      const claims: jwt.JwtPayload = jwt.verify(
+        tokenWithoutBearer,
+        "your-secret-key"
+      ) as jwt.JwtPayload;
+
       const orgid = claims._id;
 
       const conference = await this.createConference.execute(
@@ -90,9 +98,20 @@ class ConferenceController {
   ): Promise<void> {
     // const { organizerId } = req.params;
 
-    const cookie = req.headers.authorization;
-    const claims = jwt.verify(cookie!, "your-secret-key") as JwtPayload;
+    const token = req.headers.authorization;
+
+    if (!token || !token.startsWith("Bearer ")) {
+      res.json({ unauthenticated: true });
+    }
+
+    const tokenWithoutBearer = token!.slice(7); // Remove the "Bearer " prefix
+    const claims: jwt.JwtPayload = jwt.verify(
+      tokenWithoutBearer,
+      "your-secret-key"
+    ) as jwt.JwtPayload;
+
     const orgid = claims._id;
+
     try {
       const conferences = await this.getAllConfByOrg.execute(orgid);
       res.status(200).json({ conferences });
@@ -109,8 +128,18 @@ class ConferenceController {
   ): Promise<void> {
     // const { organizerId } = req.params;
 
-    const cookie = req.headers.authorization;
-    const claims = jwt.verify(cookie!, "your-secret-key") as JwtPayload;
+    const token = req.headers.authorization;
+
+    if (!token || !token.startsWith("Bearer ")) {
+      res.json({ unauthenticated: true });
+    }
+
+    const tokenWithoutBearer = token!.slice(7); // Remove the "Bearer " prefix
+    const claims: jwt.JwtPayload = jwt.verify(
+      tokenWithoutBearer,
+      "your-secret-key"
+    ) as jwt.JwtPayload;
+
     const userId = claims.userId;
 
     try {
@@ -215,7 +244,7 @@ class ConferenceController {
     }
   }
 
-   async updateConferenceHandler(req: Request, res: Response): Promise<void> {
+  async updateConferenceHandler(req: Request, res: Response): Promise<void> {
     try {
       const { name, startDate, endDate } = req.body;
       const id = new Types.ObjectId(req.params.id);
@@ -223,20 +252,18 @@ class ConferenceController {
         id,
         name,
         startDate,
-        endDate,
-        
+        endDate
       );
       res.status(201).json(conference);
     } catch (error) {
       res.status(500).json(error);
     }
-  
-   }
+  }
 
-   async addSessionHandler(req: Request, res: Response): Promise<void> {
+  async addSessionHandler(req: Request, res: Response): Promise<void> {
     try {
       // Extract data from request body
-      const {  sessionDate, session } = req.body;
+      const { sessionDate, session } = req.body;
       const confId = new Types.ObjectId(req.body.confId);
       // Add the session to the conference using the AddSessionUseCase
       await this.addSession.execute(confId, sessionDate, session);

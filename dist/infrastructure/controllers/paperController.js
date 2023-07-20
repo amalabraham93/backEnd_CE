@@ -58,8 +58,12 @@ class PaperController {
     }
     async getPaperByUserIdHandler(req, res) {
         try {
-            const cookie = req.headers.authorization;
-            const claims = jsonwebtoken_1.default.verify(cookie, "your-secret-key");
+            const token = req.headers.authorization;
+            if (!token || !token.startsWith('Bearer ')) {
+                res.json({ unauthenticated: true });
+            }
+            const tokenWithoutBearer = token.slice(7); // Remove the "Bearer " prefix
+            const claims = jsonwebtoken_1.default.verify(tokenWithoutBearer, "your-secret-key");
             const userId = claims.userId;
             const user = await this.userRepository.getUserById(userId);
             const paper = await this.getPaperByUserId.execute(user.email);

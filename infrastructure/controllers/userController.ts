@@ -121,14 +121,15 @@ class UserController {
         res.status(401).json({ error: "Email not verified" });
         return;
       }
+      console.log(user._id);
 
       // Generate a JWT token
       const token = jwt.sign({ userId: user._id }, "your-secret-key");
       // res.cookie("jwt-user", token, {
       //   httpOnly: true,
       //   maxAge: 24 * 60 * 60 * 1000,
-      //   sameSite: "none", 
-      //   secure: true, 
+      //   sameSite: "none",
+      //   secure: true,
       // });
       res.status(200).json({ token });
 
@@ -141,24 +142,33 @@ class UserController {
 
   async logout(req: Request, res: Response): Promise<void> {
     // res.clearCookie("jwt-user");
-    res.json({message: "Logout successful"})
-   
+    res.json({ message: "Logout successful" });
   }
 
   async active(req: Request, res: Response): Promise<any> {
     try {
-      const cookie = req.headers.authorization;
-      
+      const token = req.headers.authorization;
+
+      if (!token || !token.startsWith("Bearer ")) {
+        return res.json({ unauthenticated: true });
+      }
+
+      const tokenWithoutBearer = token.slice(7); // Remove the "Bearer " prefix
       const claims: jwt.JwtPayload = jwt.verify(
-        cookie!,
+        tokenWithoutBearer,
         "your-secret-key"
       ) as jwt.JwtPayload;
 
       const userId = claims.userId;
-      
+      console.log(userId);
+
+      if (!userId) {
+        return res.json({ unauthenticated: true });
+      }
+
       const user = await this.userRepository.getUserById(userId);
 
-      if (!claims) {
+      if (!user) {
         return res.json({ unauthenticated: true });
       } else {
         return res.json({ authenticated: true, user });
@@ -170,21 +180,21 @@ class UserController {
 
   async getUserByIdHandler(req: Request, res: Response): Promise<any> {
     try {
-      const cookie = req.headers.authorization;
+      const token = req.headers.authorization;
 
-      console.log(cookie);
+      if (!token || !token.startsWith("Bearer ")) {
+        return res.json({ unauthenticated: true });
+      }
+
+      const tokenWithoutBearer = token.slice(7); // Remove the "Bearer " prefix
       const claims: jwt.JwtPayload = jwt.verify(
-        cookie!,
+        tokenWithoutBearer,
         "your-secret-key"
       ) as jwt.JwtPayload;
 
-      
-      
-      const userId = claims.userId; // Convert the userId to string
-      
-      
-      console.log(userId);
+      const userId = claims.userId;
 
+      console.log(userId);
 
       if (!claims) {
         return res.status(401).json({ error: "Unauthorized" });
@@ -204,11 +214,18 @@ class UserController {
 
   async makePaymentHandler(req: Request, res: Response): Promise<any> {
     try {
-      const cookie = req.headers.authorization;
+      const token = req.headers.authorization;
+
+      if (!token || !token.startsWith("Bearer ")) {
+        return res.json({ unauthenticated: true });
+      }
+
+      const tokenWithoutBearer = token.slice(7); // Remove the "Bearer " prefix
       const claims: jwt.JwtPayload = jwt.verify(
-        cookie!,
+        tokenWithoutBearer,
         "your-secret-key"
       ) as jwt.JwtPayload;
+
       const userId = claims.userId;
 
       if (!claims) {
