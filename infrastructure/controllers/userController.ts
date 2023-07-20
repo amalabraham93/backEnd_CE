@@ -140,7 +140,8 @@ class UserController {
   }
 
   async logout(req: Request, res: Response): Promise<void> {
-    res.clearCookie("jwt-user");
+    // res.clearCookie("jwt-user");
+    res.json('loggeed out successfully')
     res.send({
       message: "Logout successful",
     });
@@ -149,12 +150,16 @@ class UserController {
   async active(req: Request, res: Response): Promise<any> {
     try {
       const cookie = req.headers.authorization;
+      console.log(cookie);
+      
       const claims: jwt.JwtPayload = jwt.verify(
         cookie!,
         "your-secret-key"
       ) as jwt.JwtPayload;
 
       const userId = claims.userId;
+      console.log(userId);
+      
       const user = await this.userRepository.getUserById(userId);
 
       if (!claims) {
