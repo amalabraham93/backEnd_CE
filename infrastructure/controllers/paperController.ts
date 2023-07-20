@@ -7,7 +7,7 @@ import GetByIdUseCase from "../../domain/usecases/paper/getByConfId";
 import jwt from "jsonwebtoken";
 import GetByUserIdUseCase from "'../../domain/usecases/paper/getByUserId";
 import GetPaperByIdUseCase from "../../domain/usecases/paper/getById";
-import updateAproovedUseCase from "domain/usecases/paper/updateApproved";
+import updateAproovedUseCase from "../../domain/usecases/paper/updateApproved";
 
 class PaperController {
   private createPaper: CreatePaperUseCase;

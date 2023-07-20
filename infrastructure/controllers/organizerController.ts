@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import CreateOrganizerUseCase from "domain/usecases/organizer/createOrganizer";
-import OrganizerRepository from "domain/repositories/organizerRepository";
-import LoginOrganizerUseCase from "domain/usecases/organizer/loginOrganizer";
+import CreateOrganizerUseCase from "../../domain/usecases/organizer/createOrganizer";
+import OrganizerRepository from "../../domain/repositories/organizerRepository";
+import LoginOrganizerUseCase from "../../domain/usecases/organizer/loginOrganizer";
 import jwt from "jsonwebtoken";
 
 class OrganizerController {

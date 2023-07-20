@@ -1,5 +1,5 @@
-import Conference from "domain/entities/conference";
-import ConferenceRepository from "domain/repositories/conferenceRepository";
+import Conference from "../../../domain/entities/conference";
+import ConferenceRepository from "../../../domain/repositories/conferenceRepository";
 
 import dotenv from 'dotenv';
 import { Types } from "mongoose";

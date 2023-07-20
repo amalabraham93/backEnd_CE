@@ -1,4 +1,4 @@
-import Organizer from 'domain/entities/organizer';
+import Organizer from '../../domain/entities/organizer';
 import { ObjectId } from 'mongoose';
 
 interface OrganizerRepository {

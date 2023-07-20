@@ -7,8 +7,8 @@ import GetPresentationsByAuthorIdUseCase from "../../domain/usecases/presentatio
 import GetPresentationByIdUseCase from "../../domain/usecases/presentation/getPresentationById";
 import UpdatePresentationUseCase from "../../domain/usecases/presentation/updatePesentation";
 import SocketService from "../../infrastructure/services/socketIoService";
-import EmailService from "domain/services/EmailService";
-import ConferenceRepository from "domain/repositories/conferenceRepository";
+import EmailService from "../../domain/services/EmailService";
+import ConferenceRepository from "../../domain/repositories/conferenceRepository";
 
 class PresentationController {
   private createPresentation: CreatePresentationUseCase;

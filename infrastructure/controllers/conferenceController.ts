@@ -11,8 +11,8 @@ import UserRepository from "../../domain/repositories/userRepository";
 import AddReviewerUseCase from "../../domain/usecases/conference/addReviewer";
 import ReviewerLoginUseCase from "../../domain/usecases/conference/reviewerLogin";
 import GetConfByUserUseCase from "../../domain/usecases/conference/getByUserId";
-import UpdateConferenceUseCase from "domain/usecases/conference/updateConference";
-import AddSessionUseCase from "domain/usecases/conference/addSession";
+import UpdateConferenceUseCase from "../../domain/usecases/conference/updateConference";
+import AddSessionUseCase from "../../domain/usecases/conference/addSession";
 
 class ConferenceController {
   private createConference: CreateConferenceUseCase;

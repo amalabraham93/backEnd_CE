@@ -1,6 +1,6 @@
 import mongoose, { ObjectId } from "mongoose";
-import Admin from "domain/entities/admin";
-import AdminRepository from "domain/repositories/adminRepository";
+import Admin from "../../../domain/entities/admin";
+import AdminRepository from "../../../domain/repositories/adminRepository";
 
 const AdminSchema = new mongoose.Schema({
   name: { type: String, required: true },

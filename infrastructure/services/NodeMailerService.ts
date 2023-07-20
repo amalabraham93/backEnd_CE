@@ -1,5 +1,5 @@
   import nodemailer from 'nodemailer';
-  import EmailService from 'domain/services/EmailService';
+  import EmailService from '../../domain/services/EmailService';
 
   class NodeMailerService implements EmailService {
     async sendVerificationEmail(email: string, verificationToken: string): Promise<void> {

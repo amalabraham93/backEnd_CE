@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import CreateAdminUseCase from 'domain/usecases/admin/createAdmin';
+import CreateAdminUseCase from '../../domain/usecases/admin/createAdmin';
 
 class AdminController {
   private createAdmin: CreateAdminUseCase;

@@ -1,4 +1,4 @@
-import Admin from 'domain/entities/admin';
+import Admin from '../../domain/entities/admin';
 import { ObjectId } from 'mongoose';
 
 interface AdminRepository {

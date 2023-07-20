@@ -1,5 +1,5 @@
 import Paper from "../../../domain/entities/paper";
-import PaperRepository from "domain/repositories/paperRepository";
+import PaperRepository from "../../../domain/repositories/paperRepository";
 import { Date, Types } from "mongoose";
 
 class GetByUserIdUseCase {

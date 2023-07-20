@@ -1,6 +1,6 @@
-import Conference from "domain/entities/conference";
-import ConferenceRepository from "domain/repositories/conferenceRepository";
-import EmailService from "domain/services/EmailService";
+import Conference from "../../../domain/entities/conference";
+import ConferenceRepository from "../../../domain/repositories/conferenceRepository";
+import EmailService from "../../../domain/services/EmailService";
 import dotenv from 'dotenv';
 import { Types } from "mongoose";
 class AddReviewerUseCase{

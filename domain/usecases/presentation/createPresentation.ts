@@ -2,9 +2,9 @@ import PresentationRepository from '../../repositories/presentationRepository';
 import Presentation from '../../entities/presentation';
 import { ObjectId, Types } from 'mongoose';
 import EmailService from '../../../domain/services/EmailService';
-import ConferenceRepository from 'domain/repositories/conferenceRepository';
-import User from 'domain/entities/user';
-import UserRepository from 'domain/repositories/userRepository';
+import ConferenceRepository from '../../../domain/repositories/conferenceRepository';
+import User from '../../../domain/entities/user';
+import UserRepository from '../../../domain/repositories/userRepository';
 
 class CreatePresentationUseCase {
   private presentationRepository: PresentationRepository;

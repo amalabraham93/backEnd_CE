@@ -1,4 +1,4 @@
-import Paper from "domain/entities/paper";
+import Paper from "../../domain/entities/paper";
 import { ObjectId, Types } from "mongoose";
 
 interface PaperRepository {

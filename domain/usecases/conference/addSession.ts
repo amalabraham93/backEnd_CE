@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import ConferenceRepository from "domain/repositories/conferenceRepository";
+import ConferenceRepository from "../../../domain/repositories/conferenceRepository";
 import Conference,{Session} from "../../../domain/entities/conference";
 
 

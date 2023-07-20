@@ -1,6 +1,6 @@
 import mongoose, { ObjectId } from "mongoose";
-import Organizer from "domain/entities/organizer";
-import OrganizerRepository from "domain/repositories/organizerRepository";
+import Organizer from "../../../domain/entities/organizer";
+import OrganizerRepository from "../../../domain/repositories/organizerRepository";
 
 const OrganizerSchema = new mongoose.Schema({
   organizername: { type: String, required: true },

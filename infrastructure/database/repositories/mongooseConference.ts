@@ -1,6 +1,6 @@
 import mongoose, { Types } from "mongoose";
 import Conference,{ScheduleDate,Session} from "../../../domain/entities/conference";
-import ConferenceRepository from "domain/repositories/conferenceRepository";
+import ConferenceRepository from "../../../domain/repositories/conferenceRepository";
 import { Schema, ObjectId } from "mongoose";
 
 
