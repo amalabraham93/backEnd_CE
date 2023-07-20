@@ -47,54 +47,72 @@ class ConferenceController {
             const { name, startDate } = req.body;
             const token = req.headers.authorization;
             if (!token || !token.startsWith("Bearer ")) {
-                res.json({ unauthenticated: true });
+                res.status(401).json({ error: "Unauthorized" });
+                return;
             }
             const tokenWithoutBearer = token.slice(7);
-            const claims = jsonwebtoken_1.default.verify(tokenWithoutBearer, "your-secret-key");
+            let claims;
+            try {
+                claims = jsonwebtoken_1.default.verify(tokenWithoutBearer, "your-secret-key");
+            }
+            catch (error) {
+                res.status(401).json({ error: "Invalid token" });
+                return;
+            }
             const orgid = claims._id;
             const conference = await this.createConference.execute(name, startDate, orgid);
             res.status(201).json(conference);
         }
         catch (error) {
-            res.status(500).json(error);
+            res.status(500).json({ error: "Internal server error" });
         }
     }
     async getConferencesByOrganizerIdHandler(req, res) {
-        // const { organizerId } = req.params;
         const token = req.headers.authorization;
         if (!token || !token.startsWith("Bearer ")) {
-            res.json({ unauthenticated: true });
+            res.status(401).json({ error: "Unauthorized" });
+            return;
         }
         const tokenWithoutBearer = token.slice(7); // Remove the "Bearer " prefix
-        const claims = jsonwebtoken_1.default.verify(tokenWithoutBearer, "your-secret-key");
+        let claims;
+        try {
+            claims = jsonwebtoken_1.default.verify(tokenWithoutBearer, "your-secret-key");
+        }
+        catch (error) {
+            res.status(401).json({ error: "Invalid token" });
+            return;
+        }
         const orgid = claims._id;
         try {
             const conferences = await this.getAllConfByOrg.execute(orgid);
             res.status(200).json({ conferences });
         }
         catch (error) {
-            res
-                .status(500)
-                .json({ message: "Error retrieving conferences by organizer ID" });
+            res.status(500).json({ message: "Error retrieving conferences by organizer ID" });
         }
     }
     async getConferencesByUserIdHandler(req, res) {
-        // const { organizerId } = req.params;
         const token = req.headers.authorization;
         if (!token || !token.startsWith("Bearer ")) {
-            res.json({ unauthenticated: true });
+            res.status(401).json({ error: "Unauthorized" });
+            return;
         }
         const tokenWithoutBearer = token.slice(7); // Remove the "Bearer " prefix
-        const claims = jsonwebtoken_1.default.verify(tokenWithoutBearer, "your-secret-key");
+        let claims;
+        try {
+            claims = jsonwebtoken_1.default.verify(tokenWithoutBearer, "your-secret-key");
+        }
+        catch (error) {
+            res.status(401).json({ error: "Invalid token" });
+            return;
+        }
         const userId = claims.userId;
         try {
             const conferences = await this.getConfByUserId.execute(userId);
             res.status(200).json({ conferences });
         }
         catch (error) {
-            res
-                .status(500)
-                .json({ message: "Error retrieving conferences by organizer ID" });
+            res.status(500).json({ message: "Error retrieving conferences by organizer ID" });
         }
     }
     async getConfByIdHandler(req, res) {

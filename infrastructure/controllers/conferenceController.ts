@@ -70,14 +70,19 @@ class ConferenceController {
       const token = req.headers.authorization;
 
       if (!token || !token.startsWith("Bearer ")) {
-        res.json({ unauthenticated: true });
+        res.status(401).json({ error: "Unauthorized" });
+        return;
       }
 
-      const tokenWithoutBearer = token!.slice(7);
-      const claims: jwt.JwtPayload = jwt.verify(
-        tokenWithoutBearer,
-        "your-secret-key"
-      ) as jwt.JwtPayload;
+      const tokenWithoutBearer = token.slice(7);
+      let claims: jwt.JwtPayload;
+
+      try {
+        claims = jwt.verify(tokenWithoutBearer, "your-secret-key") as jwt.JwtPayload;
+      } catch (error) {
+        res.status(401).json({ error: "Invalid token" });
+        return;
+      }
 
       const orgid = claims._id;
 
@@ -86,29 +91,35 @@ class ConferenceController {
         startDate,
         orgid
       );
+
       res.status(201).json(conference);
     } catch (error) {
-      res.status(500).json(error);
+      res.status(500).json({ error: "Internal server error" });
     }
   }
+
+
 
   async getConferencesByOrganizerIdHandler(
     req: Request,
     res: Response
   ): Promise<void> {
-    // const { organizerId } = req.params;
-
     const token = req.headers.authorization;
 
     if (!token || !token.startsWith("Bearer ")) {
-      res.json({ unauthenticated: true });
+      res.status(401).json({ error: "Unauthorized" });
+      return;
     }
 
-    const tokenWithoutBearer = token!.slice(7); // Remove the "Bearer " prefix
-    const claims: jwt.JwtPayload = jwt.verify(
-      tokenWithoutBearer,
-      "your-secret-key"
-    ) as jwt.JwtPayload;
+    const tokenWithoutBearer = token.slice(7); // Remove the "Bearer " prefix
+    let claims: jwt.JwtPayload;
+
+    try {
+      claims = jwt.verify(tokenWithoutBearer, "your-secret-key") as jwt.JwtPayload;
+    } catch (error) {
+      res.status(401).json({ error: "Invalid token" });
+      return;
+    }
 
     const orgid = claims._id;
 
@@ -116,29 +127,32 @@ class ConferenceController {
       const conferences = await this.getAllConfByOrg.execute(orgid);
       res.status(200).json({ conferences });
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: "Error retrieving conferences by organizer ID" });
+      res.status(500).json({ message: "Error retrieving conferences by organizer ID" });
     }
   }
+
+
 
   async getConferencesByUserIdHandler(
     req: Request,
     res: Response
   ): Promise<void> {
-    // const { organizerId } = req.params;
-
     const token = req.headers.authorization;
 
     if (!token || !token.startsWith("Bearer ")) {
-      res.json({ unauthenticated: true });
+      res.status(401).json({ error: "Unauthorized" });
+      return;
     }
 
-    const tokenWithoutBearer = token!.slice(7); // Remove the "Bearer " prefix
-    const claims: jwt.JwtPayload = jwt.verify(
-      tokenWithoutBearer,
-      "your-secret-key"
-    ) as jwt.JwtPayload;
+    const tokenWithoutBearer = token.slice(7); // Remove the "Bearer " prefix
+    let claims: jwt.JwtPayload;
+
+    try {
+      claims = jwt.verify(tokenWithoutBearer, "your-secret-key") as jwt.JwtPayload;
+    } catch (error) {
+      res.status(401).json({ error: "Invalid token" });
+      return;
+    }
 
     const userId = claims.userId;
 
@@ -146,11 +160,11 @@ class ConferenceController {
       const conferences = await this.getConfByUserId.execute(userId);
       res.status(200).json({ conferences });
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: "Error retrieving conferences by organizer ID" });
+      res.status(500).json({ message: "Error retrieving conferences by organizer ID" });
     }
   }
+
+  
 
   async getConfByIdHandler(req: Request, res: Response): Promise<void> {
     const paramId = req.params.confId;
