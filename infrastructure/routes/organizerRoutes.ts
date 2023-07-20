@@ -27,6 +27,7 @@ import CreatePresentationUseCase from '../../domain/usecases/presentation/create
 import MongoosePresentationRepository from '../../infrastructure/database/repositories/mongoosePresentationRepository';
 import SocketService from '../../infrastructure/services/socketIoService';
 import UpdateConferenceUseCase from '../../domain/usecases/conference/updateConference';
+import AddSessionUseCase from '../../domain/usecases/conference/addSession';
 
 const organizerRouter = express.Router();
 
@@ -50,7 +51,8 @@ const addReviewer = new AddReviewerUseCase(conferenceRepository,emailService)
 const reviewerLogin = new ReviewerLoginUseCase(conferenceRepository)
 const getConfByUserId = new GetConfByUserUseCase(conferenceRepository)
 const updateConference =new UpdateConferenceUseCase(conferenceRepository)
-const conferenceController = new ConferenceController(createConference,getConferencesByOrganizerId, getConferenceById,getAllConference,registerConfUse,useRepository,addReviewer,reviewerLogin,getConfByUserId,updateConference)
+const addSession = new AddSessionUseCase({conferenceRepository})
+const conferenceController = new ConferenceController(createConference,getConferencesByOrganizerId, getConferenceById,getAllConference,registerConfUse,useRepository,addReviewer,reviewerLogin,getConfByUserId,updateConference,addSession)
 
 //papers
 const userRepository = new MongooseUserRepository();
@@ -88,6 +90,8 @@ organizerRouter.post('/conference/add-reviewer', conferenceController.addReviewe
 organizerRouter.post('/conference/reviewer-login', conferenceController.reviewerLoginHandler);
 organizerRouter.get('/conference/users-conf', conferenceController.getConferencesByUserIdHandler);
 organizerRouter.put('/conference/update-conf/:id', conferenceController.updateConferenceHandler);
+organizerRouter.post('/conference/add-session', conferenceController.addSessionHandler);
+
 
 
 //paper

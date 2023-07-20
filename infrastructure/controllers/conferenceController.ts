@@ -12,6 +12,7 @@ import AddReviewerUseCase from "../../domain/usecases/conference/addReviewer";
 import ReviewerLoginUseCase from "../../domain/usecases/conference/reviewerLogin";
 import GetConfByUserUseCase from "../../domain/usecases/conference/getByUserId";
 import UpdateConferenceUseCase from "domain/usecases/conference/updateConference";
+import AddSessionUseCase from "domain/usecases/conference/addSession";
 
 class ConferenceController {
   private createConference: CreateConferenceUseCase;
@@ -24,7 +25,7 @@ class ConferenceController {
   private reviewerLogin: ReviewerLoginUseCase;
   private getConfByUserId: GetConfByUserUseCase;
   private updateConference: UpdateConferenceUseCase;
-
+  private addSession:AddSessionUseCase;
   constructor(
     createConference: CreateConferenceUseCase,
     getAllConfByOrg: GetAllConfByOrgUseCase,
@@ -35,7 +36,8 @@ class ConferenceController {
     addReviewer: AddReviewerUseCase,
     reviewerLogin: ReviewerLoginUseCase,
     getConfByUserId: GetConfByUserUseCase,
-    updateConference: UpdateConferenceUseCase
+    updateConference: UpdateConferenceUseCase,
+    addSession:AddSessionUseCase
   ) {
     this.createConference = createConference;
     this.getAllConfByOrg = getAllConfByOrg;
@@ -47,6 +49,7 @@ class ConferenceController {
     this.reviewerLogin = reviewerLogin;
     this.getConfByUserId = getConfByUserId;
     this.updateConference = updateConference;
+    this.addSession = addSession;
     this.CreateConferenceHandler = this.CreateConferenceHandler.bind(this);
     this.getConferencesByOrganizerIdHandler =
       this.getConferencesByOrganizerIdHandler.bind(this);
@@ -58,6 +61,7 @@ class ConferenceController {
     this.getConferencesByUserIdHandler =
       this.getConferencesByUserIdHandler.bind(this);
       this.updateConferenceHandler = this.updateConferenceHandler.bind(this);
+      this.addSessionHandler = this.addSessionHandler.bind(this);
   
   }
 
@@ -228,6 +232,21 @@ class ConferenceController {
     }
   
    }
+
+   async addSessionHandler(req: Request, res: Response): Promise<void> {
+    try {
+      // Extract data from request body
+      const {  sessionDate, session } = req.body;
+      const confId = new Types.ObjectId(req.body.confId);
+      // Add the session to the conference using the AddSessionUseCase
+      await this.addSession.execute(confId, sessionDate, session);
+
+      res.status(200).json({ message: "Session added successfully" });
+    } catch (error) {
+      console.error("Error adding session to conference:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  }
 }
 
 export default ConferenceController;

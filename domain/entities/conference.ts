@@ -2,6 +2,17 @@ import { ObjectId } from "mongodb"
 import { Types } from "mongoose"
 import User from "./user"
 
+export interface Session {
+  time: string;
+  authorName: string;
+  paperName: string;
+}
+
+export interface ScheduleDate {
+  date: Date;
+  sessions: Session[];
+}
+
 
 class Conference{
     private id!:ObjectId
@@ -13,7 +24,7 @@ class Conference{
     //  private location :string
     //  private  type : string
      public users:User[]
-     
+     private schedule!: ScheduleDate[];
 
 
     constructor( name:string, startDate:Date,
@@ -61,5 +72,21 @@ class Conference{
         return this.endDate
         
       }
+
+      getSchedule(): ScheduleDate[] {
+        return this.schedule;
+      }
+    
+      // addSessionToSchedule(sessionDate: Date, session: Session): void {
+      //   const scheduleDate = this.schedule.find((date) =>
+      //     date.date.getTime() === sessionDate.getTime()
+      //   );
+    
+      //   if (scheduleDate) {
+      //     scheduleDate.sessions.push(session);
+      //   } else {
+      //     this.schedule.push({ date: sessionDate, sessions: [session] });
+      //   }
+      // }
 }
 export default Conference

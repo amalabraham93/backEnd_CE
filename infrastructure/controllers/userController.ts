@@ -127,8 +127,8 @@ class UserController {
       res.cookie("jwt-user", token, {
         httpOnly: true,
         maxAge: 24 * 60 * 60 * 1000,
-        sameSite: "none", // Enable this for cross-site requests
-        secure: true, // Enable this for secure requests (HTTPS)
+        sameSite: "none", 
+        secure: true, 
       });
       res.status(200).json({ token });
 

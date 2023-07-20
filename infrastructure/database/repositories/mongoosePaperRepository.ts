@@ -56,7 +56,9 @@ class MongoosePaperRepository implements PaperRepository {
   async getByConferenceId(
     conference: mongoose.Types.ObjectId
   ): Promise<Paper[]> {
-    const papers = await PaperModel.find({ conference: conference }).populate("conference").exec();
+    const papers = await PaperModel.find({ conference: conference })
+      .populate("conference")
+      .exec();
     return papers.map((paper) => paper.toObject()) as Paper[];
   }
 
