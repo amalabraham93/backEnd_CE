@@ -155,7 +155,6 @@ class UserController {
       ) as jwt.JwtPayload;
 
       const userId = claims.userId;
-      console.log(userId);
       
       const user = await this.userRepository.getUserById(userId);
 
@@ -173,14 +172,19 @@ class UserController {
     try {
       const cookie = req.headers.authorization;
 
-
+      console.log(cookie);
       const claims: jwt.JwtPayload = jwt.verify(
         cookie!,
         "your-secret-key"
       ) as jwt.JwtPayload;
 
-
+      
+      
       const userId = claims.userId; // Convert the userId to string
+      
+      
+      console.log(userId);
+
 
       if (!claims) {
         return res.status(401).json({ error: "Unauthorized" });
