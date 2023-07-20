@@ -92,9 +92,9 @@ class PaperController {
   }
   async getPaperByUserIdHandler(req: Request, res: Response): Promise<void> {
     try {
-      const cookie = req.cookies["jwt-user"];
+      const cookie = req.headers.authorization;
       const claims: jwt.JwtPayload = jwt.verify(
-        cookie,
+        cookie!,
         "your-secret-key"
       ) as jwt.JwtPayload;
 

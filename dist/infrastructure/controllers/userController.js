@@ -37,12 +37,12 @@ class UserController {
                 if (user) {
                     // Generate a JWT token
                     const token = jsonwebtoken_1.default.sign({ userId: user._id }, "your-secret-key");
-                    res.cookie("jwt-user", token, {
-                        httpOnly: true,
-                        maxAge: 24 * 60 * 60 * 1000,
-                        sameSite: "none",
-                        secure: true, // Enable this for secure requests (HTTPS)
-                    });
+                    // res.cookie("jwt-user", token, {
+                    //   httpOnly: true,
+                    //   maxAge: 24 * 60 * 60 * 1000,
+                    //   sameSite: "none", // Enable this for cross-site requests
+                    //   secure: true, // Enable this for secure requests (HTTPS)
+                    // });
                     // Return the token in the response
                     res.status(200).json({ token });
                 }
@@ -100,12 +100,12 @@ class UserController {
             }
             // Generate a JWT token
             const token = jsonwebtoken_1.default.sign({ userId: user._id }, "your-secret-key");
-            res.cookie("jwt-user", token, {
-                httpOnly: true,
-                maxAge: 24 * 60 * 60 * 1000,
-                sameSite: "none",
-                secure: true,
-            });
+            // res.cookie("jwt-user", token, {
+            //   httpOnly: true,
+            //   maxAge: 24 * 60 * 60 * 1000,
+            //   sameSite: "none", 
+            //   secure: true, 
+            // });
             res.status(200).json({ token });
             // Return the token in the response
         }
@@ -122,7 +122,7 @@ class UserController {
     }
     async active(req, res) {
         try {
-            const cookie = req.cookies["jwt-user"];
+            const cookie = req.headers.authorization;
             const claims = jsonwebtoken_1.default.verify(cookie, "your-secret-key");
             const userId = claims.userId;
             const user = await this.userRepository.getUserById(userId);
@@ -139,7 +139,7 @@ class UserController {
     }
     async getUserByIdHandler(req, res) {
         try {
-            const cookie = req.cookies["jwt-user"];
+            const cookie = req.headers.authorization;
             const claims = jsonwebtoken_1.default.verify(cookie, "your-secret-key");
             const userId = claims.userId.toString(); // Convert the userId to string
             if (!claims) {
@@ -157,7 +157,7 @@ class UserController {
     }
     async makePaymentHandler(req, res) {
         try {
-            const cookie = req.cookies["jwt-user"];
+            const cookie = req.headers.authorization;
             const claims = jsonwebtoken_1.default.verify(cookie, "your-secret-key");
             const userId = claims.userId.toString();
             if (!claims) {

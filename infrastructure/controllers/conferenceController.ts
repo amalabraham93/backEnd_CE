@@ -68,9 +68,9 @@ class ConferenceController {
   async CreateConferenceHandler(req: Request, res: Response): Promise<void> {
     try {
       const { name, startDate } = req.body;
-      const cookie = req.cookies["jwt-organizer"];
+      const cookie = req.headers.authorization;
 
-      const claims = jwt.verify(cookie, "your-secret-key") as JwtPayload;
+      const claims = jwt.verify(cookie!, "your-secret-key") as JwtPayload;
       const orgid = claims._id;
 
       const conference = await this.createConference.execute(
@@ -90,8 +90,8 @@ class ConferenceController {
   ): Promise<void> {
     // const { organizerId } = req.params;
 
-    const cookie = req.cookies["jwt-organizer"];
-    const claims = jwt.verify(cookie, "your-secret-key") as JwtPayload;
+    const cookie = req.headers.authorization;
+    const claims = jwt.verify(cookie!, "your-secret-key") as JwtPayload;
     const orgid = claims._id;
     try {
       const conferences = await this.getAllConfByOrg.execute(orgid);
@@ -109,8 +109,8 @@ class ConferenceController {
   ): Promise<void> {
     // const { organizerId } = req.params;
 
-    const cookie = req.cookies["jwt-user"];
-    const claims = jwt.verify(cookie, "your-secret-key") as JwtPayload;
+    const cookie = req.headers.authorization;
+    const claims = jwt.verify(cookie!, "your-secret-key") as JwtPayload;
     const userId = claims.userId;
 
     try {

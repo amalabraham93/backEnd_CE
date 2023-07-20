@@ -58,7 +58,7 @@ class PaperController {
     }
     async getPaperByUserIdHandler(req, res) {
         try {
-            const cookie = req.cookies["jwt-user"];
+            const cookie = req.headers.authorization;
             const claims = jsonwebtoken_1.default.verify(cookie, "your-secret-key");
             const userId = claims.userId;
             const user = await this.userRepository.getUserById(userId);

@@ -56,12 +56,12 @@ class UserController {
         if (user) {
           // Generate a JWT token
           const token = jwt.sign({ userId: user._id }, "your-secret-key");
-          res.cookie("jwt-user", token, {
-            httpOnly: true,
-            maxAge: 24 * 60 * 60 * 1000,
-            sameSite: "none", // Enable this for cross-site requests
-            secure: true, // Enable this for secure requests (HTTPS)
-          });
+          // res.cookie("jwt-user", token, {
+          //   httpOnly: true,
+          //   maxAge: 24 * 60 * 60 * 1000,
+          //   sameSite: "none", // Enable this for cross-site requests
+          //   secure: true, // Enable this for secure requests (HTTPS)
+          // });
           // Return the token in the response
           res.status(200).json({ token });
         } else {
@@ -124,12 +124,12 @@ class UserController {
 
       // Generate a JWT token
       const token = jwt.sign({ userId: user._id }, "your-secret-key");
-      res.cookie("jwt-user", token, {
-        httpOnly: true,
-        maxAge: 24 * 60 * 60 * 1000,
-        sameSite: "none", 
-        secure: true, 
-      });
+      // res.cookie("jwt-user", token, {
+      //   httpOnly: true,
+      //   maxAge: 24 * 60 * 60 * 1000,
+      //   sameSite: "none", 
+      //   secure: true, 
+      // });
       res.status(200).json({ token });
 
       // Return the token in the response
@@ -148,9 +148,9 @@ class UserController {
 
   async active(req: Request, res: Response): Promise<any> {
     try {
-      const cookie = req.cookies["jwt-user"];
+      const cookie = req.headers.authorization;
       const claims: jwt.JwtPayload = jwt.verify(
-        cookie,
+        cookie!,
         "your-secret-key"
       ) as jwt.JwtPayload;
 
@@ -169,9 +169,9 @@ class UserController {
 
   async getUserByIdHandler(req: Request, res: Response): Promise<any> {
     try {
-      const cookie = req.cookies["jwt-user"];
+      const cookie = req.headers.authorization;
       const claims: jwt.JwtPayload = jwt.verify(
-        cookie,
+        cookie!,
         "your-secret-key"
       ) as jwt.JwtPayload;
       const userId = claims.userId.toString(); // Convert the userId to string
@@ -194,9 +194,9 @@ class UserController {
 
   async makePaymentHandler(req: Request, res: Response): Promise<any> {
     try {
-      const cookie = req.cookies["jwt-user"];
+      const cookie = req.headers.authorization;
       const claims: jwt.JwtPayload = jwt.verify(
-        cookie,
+        cookie!,
         "your-secret-key"
       ) as jwt.JwtPayload;
       const userId = claims.userId.toString();

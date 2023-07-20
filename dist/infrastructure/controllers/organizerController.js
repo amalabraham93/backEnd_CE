@@ -24,10 +24,10 @@ class OrganizerController {
                 // Generate a JWT token
                 const token = jsonwebtoken_1.default.sign({ _id: organizer.getId() }, "your-secret-key");
                 // Set the JWT token as a cookie
-                res.cookie("jwt-organizer", token, {
-                    httpOnly: true,
-                    maxAge: 24 * 60 * 60 * 1000,
-                });
+                // res.cookie("jwt-organizer", token, {
+                //   httpOnly: true,
+                //   maxAge: 24 * 60 * 60 * 1000,
+                // });
                 // Return the token in the response
                 res.status(200).json({ token });
             }
@@ -51,10 +51,10 @@ class OrganizerController {
                 // Generate a JWT token
                 const token = jsonwebtoken_1.default.sign({ _id: organizer.id }, "your-secret-key");
                 // Set the JWT token as a cookie
-                res.cookie("jwt-organizer", token, {
-                    httpOnly: true,
-                    maxAge: 24 * 60 * 60 * 1000,
-                });
+                // res.cookie("jwt-organizer", token, {
+                //   httpOnly: true,
+                //   maxAge: 24 * 60 * 60 * 1000,
+                // });
                 // Return the token in the response
                 res.status(200).json({ token });
             }
@@ -70,7 +70,7 @@ class OrganizerController {
     }
     async logout(req, res) {
         try {
-            res.clearCookie("jwt-organizer");
+            // res.clearCookie("jwt-organizer");
             res.status(200).json({ message: "Logout successful" });
         }
         catch (error) {

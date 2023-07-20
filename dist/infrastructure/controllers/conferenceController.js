@@ -45,7 +45,7 @@ class ConferenceController {
     async CreateConferenceHandler(req, res) {
         try {
             const { name, startDate } = req.body;
-            const cookie = req.cookies["jwt-organizer"];
+            const cookie = req.headers.authorization;
             const claims = jsonwebtoken_1.default.verify(cookie, "your-secret-key");
             const orgid = claims._id;
             const conference = await this.createConference.execute(name, startDate, orgid);
@@ -57,7 +57,7 @@ class ConferenceController {
     }
     async getConferencesByOrganizerIdHandler(req, res) {
         // const { organizerId } = req.params;
-        const cookie = req.cookies["jwt-organizer"];
+        const cookie = req.headers.authorization;
         const claims = jsonwebtoken_1.default.verify(cookie, "your-secret-key");
         const orgid = claims._id;
         try {
@@ -72,7 +72,7 @@ class ConferenceController {
     }
     async getConferencesByUserIdHandler(req, res) {
         // const { organizerId } = req.params;
-        const cookie = req.cookies["jwt-user"];
+        const cookie = req.headers.authorization;
         const claims = jsonwebtoken_1.default.verify(cookie, "your-secret-key");
         const userId = claims.userId;
         try {
