@@ -141,10 +141,8 @@ class UserController {
 
   async logout(req: Request, res: Response): Promise<void> {
     // res.clearCookie("jwt-user");
-    res.json('loggeed out successfully')
-    res.send({
-      message: "Logout successful",
-    });
+    res.json({message: "Logout successful"})
+   
   }
 
   async active(req: Request, res: Response): Promise<any> {
