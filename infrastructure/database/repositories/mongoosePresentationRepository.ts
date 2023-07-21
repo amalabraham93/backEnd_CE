@@ -55,7 +55,7 @@ class MongoosePresentationRepository implements PresentationRepository {
   ): Promise<Presentation[]> {
     const presentations = await PresentationModel.find({
       conference: conferenceId,
-    }).exec();
+    }).sort({ start_time: -1 }).limit(1).exec();
     return presentations.map((presentation) => presentation.toObject());
   }
 
