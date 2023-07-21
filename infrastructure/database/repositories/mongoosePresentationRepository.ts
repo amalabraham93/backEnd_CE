@@ -1,4 +1,4 @@
-import mongoose, { ObjectId, Schema } from "mongoose";
+import mongoose, {Types, ObjectId, Schema } from "mongoose";
 import Presentation from "../../../domain/entities/presentation";
 import PresentationRepository from "../../../domain/repositories/presentationRepository";
 
@@ -51,7 +51,7 @@ class MongoosePresentationRepository implements PresentationRepository {
   }
 
   async getPresentationsByConferenceId(
-    conferenceId: ObjectId
+    conferenceId: Types.ObjectId
   ): Promise<Presentation[]> {
     const presentations = await PresentationModel.find({
       conference: conferenceId,

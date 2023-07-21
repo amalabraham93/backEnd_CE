@@ -16,16 +16,16 @@ class PresentationController {
   private emailService!: EmailService;
   private conferenceRepository!: ConferenceRepository;
   //   private presentationRepository: PresentationRepository;
-  //   private getPresentationsByConferenceId: GetPresentationsByConferenceIdUseCase;
+    private getPresentationsByConferenceId: GetPresentationsByConferenceIdUseCase;
   //   private getPresentationsByAuthorId: GetPresentationsByAuthorIdUseCase;
   //   private getPresentationById: GetPresentationByIdUseCase;
   //   private updatePresentation: UpdatePresentationUseCase;
 
   constructor(
     createPresentation: CreatePresentationUseCase,
-    socketService: SocketService
+    socketService: SocketService,
     // presentationRepository: PresentationRepository,
-    // getPresentationsByConferenceId: GetPresentationsByConferenceIdUseCase,
+    getPresentationsByConferenceId: GetPresentationsByConferenceIdUseCase,
     // getPresentationsByAuthorId: GetPresentationsByAuthorIdUseCase,
     // getPresentationById: GetPresentationByIdUseCase,
     // updatePresentation: UpdatePresentationUseCase
@@ -33,14 +33,13 @@ class PresentationController {
     this.createPresentation = createPresentation;
     this.socketService = socketService;
     // this.presentationRepository = presentationRepository;
-    // this.getPresentationsByConferenceId = getPresentationsByConferenceId;
+    this.getPresentationsByConferenceId = getPresentationsByConferenceId;
     // this.getPresentationsByAuthorId = getPresentationsByAuthorId;
     // this.getPresentationById = getPresentationById;
     // this.updatePresentation = updatePresentation;
 
     this.createPresentationHandler = this.createPresentationHandler.bind(this);
-    // this.getPresentationsByConferenceIdHandler =
-    //   this.getPresentationsByConferenceIdHandler.bind(this);
+   this.getPresentationsByConferenceIdHandler = this.getPresentationsByConferenceIdHandler.bind(this);
     // this.getPresentationsByAuthorIdHandler =this.getPresentationsByAuthorIdHandler.bind(this);
     // this.getPresentationByIdHandler =
     //   this.getPresentationByIdHandler.bind(this);
@@ -68,24 +67,25 @@ class PresentationController {
     }
   }
 
-  //   async getPresentationsByConferenceIdHandler(
-  //     req: Request,
-  //     res: Response
-  //   ): Promise<void> {
-  //     try {
-  //       const conferenceId = new Types.ObjectId(req.params.conferenceId);
+    async getPresentationsByConferenceIdHandler(
+      req: Request,
+      res: Response
+    ): Promise<void> {
+      try {
+        const conferenceId = new Types.ObjectId(req.params.confId);
 
-  //       const presentations = await this.getPresentationsByConferenceId.execute(
-  //         conferenceId
-  //       );
-
-  //       res.status(200).json(presentations);
-  //     } catch (error) {
-  //       res.status(500).json({
-  //         message: "Error retrieving presentations by conference ID",
-  //       });
-  //     }
-  //   }
+        const presentations = await this.getPresentationsByConferenceId.execute(
+          conferenceId
+        );
+       console.log(presentations);
+       
+        res.status(200).json(presentations);
+      } catch (error) {
+        res.status(500).json({
+          message: "Error retrieving presentations by conference ID",
+        });
+      }
+    }
 
   //   async getPresentationsByAuthorIdHandler(
   //     req: Request,

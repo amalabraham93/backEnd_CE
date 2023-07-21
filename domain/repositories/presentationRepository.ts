@@ -1,5 +1,5 @@
 import Presentation from '../entities/presentation';
-import { ObjectId } from 'mongoose';
+import { ObjectId ,Types} from 'mongoose';
 
 interface PresentationRepository {
   createPresentation(presentation: Presentation): Promise<Presentation>;
@@ -7,7 +7,7 @@ interface PresentationRepository {
   // updatePresentation(presentation: Presentation): Promise<Presentation>;
   // deletePresentation(_id: ObjectId): Promise<void>;
   // getAllPresentations(): Promise<Presentation[]>;
-  // getPresentationsByConferenceId(conferenceId: ObjectId): Promise<Presentation[]>;
+  getPresentationsByConferenceId(conferenceId: Types.ObjectId): Promise<Presentation[]>;
   // getPresentationsByAuthorId(authorId: ObjectId): Promise<Presentation[]>;
 }
 

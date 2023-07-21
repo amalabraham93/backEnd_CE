@@ -11,9 +11,9 @@ class GetPresentationsByAuthorIdUseCase {
 
   // async execute(authorId: ObjectId): Promise<Presentation[]> {
   //   // Retrieve presentations by author ID from the repository
-  //   // const presentations = await this.presentationRepository.getPresentationsByAuthorId(
-  //   //   authorId
-  //   // );
+  //   const presentations = await this.presentationRepository.getPresentationsByAuthorId(
+  //     authorId
+  //   );
 
   //   return presentations;
   // }

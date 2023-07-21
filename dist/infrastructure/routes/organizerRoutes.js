@@ -33,6 +33,7 @@ const mongoosePresentationRepository_1 = __importDefault(require("../../infrastr
 const socketIoService_1 = __importDefault(require("../../infrastructure/services/socketIoService"));
 const updateConference_1 = __importDefault(require("../../domain/usecases/conference/updateConference"));
 const addSession_1 = __importDefault(require("../../domain/usecases/conference/addSession"));
+const getPresentationByConfId_1 = __importDefault(require("../../domain/usecases/presentation/getPresentationByConfId"));
 const organizerRouter = express_1.default.Router();
 const useRepository = new mongooseUserRepository_1.default();
 //Organizer
@@ -66,8 +67,9 @@ const paperController = new paperController_1.default(createPaper, paperReposito
 //presentaion
 const presentationRepository = new mongoosePresentationRepository_1.default();
 const createPresentation = new createPresentation_1.default(presentationRepository, emailService, conferenceRepository);
+const getPresentationByConferenceId = new getPresentationByConfId_1.default(presentationRepository);
 const socketIoService = new socketIoService_1.default(presentationRepository);
-const presentaionController = new presentationController_1.default(createPresentation, socketIoService);
+const presentaionController = new presentationController_1.default(createPresentation, socketIoService, getPresentationByConferenceId);
 // POST /organizers
 organizerRouter.post('/signup', organizerController.createOrganizerHandler);
 organizerRouter.post('/login', organizerController.loginHandler);
@@ -91,4 +93,5 @@ organizerRouter.get('/conference/getpaperbyid/:paperId', paperController.getPape
 organizerRouter.post('/conference/updategetpaperbyid/:paperId', paperController.updateAcceptedHandler);
 //presentation
 organizerRouter.post('/presentation/start', presentaionController.createPresentationHandler);
+organizerRouter.get('/conference/:confId/presentation', presentaionController.getPresentationsByConferenceIdHandler);
 exports.default = organizerRouter;

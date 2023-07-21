@@ -28,6 +28,7 @@ import MongoosePresentationRepository from '../../infrastructure/database/reposi
 import SocketService from '../../infrastructure/services/socketIoService';
 import UpdateConferenceUseCase from '../../domain/usecases/conference/updateConference';
 import AddSessionUseCase from '../../domain/usecases/conference/addSession';
+import GetPresentationsByConferenceIdUseCase from '../../domain/usecases/presentation/getPresentationByConfId';
 
 const organizerRouter = express.Router();
 
@@ -67,8 +68,9 @@ const paperController = new PaperController(createPaper, paperRepository, userRe
 //presentaion
 const presentationRepository = new MongoosePresentationRepository()
 const createPresentation = new CreatePresentationUseCase(presentationRepository,emailService,conferenceRepository)
+const getPresentationByConferenceId = new GetPresentationsByConferenceIdUseCase(presentationRepository)
 const socketIoService = new SocketService(presentationRepository)
-const presentaionController = new PresentationController(createPresentation,socketIoService)
+const presentaionController = new PresentationController(createPresentation,socketIoService,getPresentationByConferenceId)
 
 
 
@@ -103,6 +105,7 @@ organizerRouter.post('/conference/updategetpaperbyid/:paperId',paperController.u
 
 //presentation
  organizerRouter.post('/presentation/start', presentaionController.createPresentationHandler);
+ organizerRouter.get('/conference/:confId/presentation', presentaionController.getPresentationsByConferenceIdHandler);
 
 
 export default organizerRouter;
