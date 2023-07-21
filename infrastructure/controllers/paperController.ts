@@ -96,26 +96,39 @@ class PaperController {
     try {
       const token = req.headers.authorization;
 
-    if (!token || !token.startsWith('Bearer ')) {
-     res.json({ unauthenticated: true });
-    }
+      if (!token) {
+        res.status(401).json({ error: "Unauthorized" });
+        return;
+      }
 
-    const tokenWithoutBearer = token!.slice(7); // Remove the "Bearer " prefix
-    const claims: jwt.JwtPayload = jwt.verify(
-      tokenWithoutBearer,
-      "your-secret-key"
-    ) as jwt.JwtPayload;
+      let claims: jwt.JwtPayload;
+
+      try {
+        claims = jwt.verify(token, "your-secret-key") as jwt.JwtPayload;
+      } catch (error) {
+        res.status(401).json({ error: "Invalid token" });
+        return;
+      }
 
       const userId = claims.userId;
+
       const user = await this.userRepository.getUserById(userId);
 
-      const paper = await this.getPaperByUserId.execute(user!.email);
+      if (!user) {
+        res.status(404).json({ message: "User not found" });
+        return;
+      }
+
+      const paper = await this.getPaperByUserId.execute(user.email);
 
       res.status(200).json({ paper });
     } catch (error) {
-      res.status(500).json({ message: "Error retrieving conferences by  ID" });
+      res.status(500).json({ message: "Error retrieving conferences by ID" });
     }
   }
+
+
+  
   async getPaperByIdHandler(req: Request, res: Response): Promise<void> {
     try {
       const paperId = new Types.ObjectId(req.params.paperId);

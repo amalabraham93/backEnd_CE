@@ -149,13 +149,12 @@ class UserController {
     try {
       const token = req.headers.authorization;
 
-      if (!token || !token.startsWith("Bearer ")) {
+      if (!token) {
         return res.json({ unauthenticated: true });
       }
 
-      const tokenWithoutBearer = token.slice(7); // Remove the "Bearer " prefix
       const claims: jwt.JwtPayload = jwt.verify(
-        tokenWithoutBearer,
+        token,
         "your-secret-key"
       ) as jwt.JwtPayload;
 
@@ -182,13 +181,12 @@ class UserController {
     try {
       const token = req.headers.authorization;
 
-      if (!token || !token.startsWith("Bearer ")) {
+      if (!token) {
         return res.json({ unauthenticated: true });
       }
 
-      const tokenWithoutBearer = token.slice(7); // Remove the "Bearer " prefix
       const claims: jwt.JwtPayload = jwt.verify(
-        tokenWithoutBearer,
+        token,
         "your-secret-key"
       ) as jwt.JwtPayload;
 
@@ -196,7 +194,7 @@ class UserController {
 
       console.log(userId);
 
-      if (!claims) {
+      if (!userId) {
         return res.status(401).json({ error: "Unauthorized" });
       }
 
@@ -216,13 +214,11 @@ class UserController {
     try {
       const token = req.headers.authorization;
 
-      if (!token || !token.startsWith("Bearer ")) {
+      if (!token) {
         return res.json({ unauthenticated: true });
       }
-
-      const tokenWithoutBearer = token.slice(7); // Remove the "Bearer " prefix
       const claims: jwt.JwtPayload = jwt.verify(
-        tokenWithoutBearer,
+        token,
         "your-secret-key"
       ) as jwt.JwtPayload;
 

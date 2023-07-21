@@ -122,11 +122,10 @@ class UserController {
     async active(req, res) {
         try {
             const token = req.headers.authorization;
-            if (!token || !token.startsWith("Bearer ")) {
+            if (!token) {
                 return res.json({ unauthenticated: true });
             }
-            const tokenWithoutBearer = token.slice(7); // Remove the "Bearer " prefix
-            const claims = jsonwebtoken_1.default.verify(tokenWithoutBearer, "your-secret-key");
+            const claims = jsonwebtoken_1.default.verify(token, "your-secret-key");
             const userId = claims.userId;
             console.log(userId);
             if (!userId) {
@@ -147,14 +146,13 @@ class UserController {
     async getUserByIdHandler(req, res) {
         try {
             const token = req.headers.authorization;
-            if (!token || !token.startsWith("Bearer ")) {
+            if (!token) {
                 return res.json({ unauthenticated: true });
             }
-            const tokenWithoutBearer = token.slice(7); // Remove the "Bearer " prefix
-            const claims = jsonwebtoken_1.default.verify(tokenWithoutBearer, "your-secret-key");
+            const claims = jsonwebtoken_1.default.verify(token, "your-secret-key");
             const userId = claims.userId;
             console.log(userId);
-            if (!claims) {
+            if (!userId) {
                 return res.status(401).json({ error: "Unauthorized" });
             }
             const user = await this.userRepository.getUserById(userId);
@@ -170,11 +168,10 @@ class UserController {
     async makePaymentHandler(req, res) {
         try {
             const token = req.headers.authorization;
-            if (!token || !token.startsWith("Bearer ")) {
+            if (!token) {
                 return res.json({ unauthenticated: true });
             }
-            const tokenWithoutBearer = token.slice(7); // Remove the "Bearer " prefix
-            const claims = jsonwebtoken_1.default.verify(tokenWithoutBearer, "your-secret-key");
+            const claims = jsonwebtoken_1.default.verify(token, "your-secret-key");
             const userId = claims.userId;
             if (!claims) {
                 return res.status(401).json({ error: "Unauthorized" });
