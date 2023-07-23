@@ -16,13 +16,16 @@
 
       
       const transporter = nodemailer.createTransport({
-          host: "smtp-relay.brevo.com",
+          host: "sandbox.smtp.mailtrap.io",
+          service: 'Gmail',
           port: 587,
+          secure: true,
           auth: {
             user: "amalabraham93@gmail.com",
-            pass: "7JpvynT9jSmLVGW2"
+            pass: "qqtmolpqonvxlxnn"
           },
-          secure:true
+        
+        
       });
 
       const mailOptions = {
@@ -52,15 +55,20 @@
     }
 
 
+
+
+
     async sendReviewerEmail(email: string, password: string, conferencelink: string): Promise<void> {
       const transporter = nodemailer.createTransport({
-        host: "smtp-relay.brevo.com",
-          port: 587,
-          auth: {
-            user: "amalabraham93@gmail.com",
-            pass: "7JpvynT9jSmLVGW2"
-          },
-        secure:true
+        host: "sandbox.smtp.mailtrap.io",
+        service: 'Gmail',
+        port: 587,
+        secure: true,
+        auth: {
+          user: "amalabraham93@gmail.com",
+          pass: "qqtmolpqonvxlxnn"
+        },
+      
       });
 
       const mailOptions = {
@@ -85,13 +93,15 @@
     async conferenceStartNotification(emails: string[], conferenceLink: string): Promise<void> {
       
       const transporter = nodemailer.createTransport({
-        host: "smtp-relay.brevo.com",
+        host: "sandbox.smtp.mailtrap.io",
+        service: 'Gmail',
         port: 587,
+        secure: true,
         auth: {
           user: "amalabraham93@gmail.com",
-          pass: "7JpvynT9jSmLVGW2"
+          pass: "qqtmolpqonvxlxnn"
         },
-        secure:true
+      
       });
   
       const mailOptions = {
