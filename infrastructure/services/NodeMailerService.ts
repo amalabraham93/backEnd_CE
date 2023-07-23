@@ -52,9 +52,6 @@
     }
 
 
-
-
-
     async sendReviewerEmail(email: string, password: string, conferencelink: string): Promise<void> {
       const transporter = nodemailer.createTransport({
         host: "smtp-relay.brevo.com",
