@@ -18,14 +18,16 @@ class NodeMailerService {
         // });
         const transporter = nodemailer_1.default.createTransport({
             host: "sandbox.smtp.mailtrap.io",
-            port: 2525,
+            service: 'Gmail',
+            port: 587,
+            secure: true,
             auth: {
-                user: "9623e3ae453490",
-                pass: "06e7218ba3f1bf"
-            }
+                user: "amalabraham93@gmail.com",
+                pass: "qqtmolpqonvxlxnn"
+            },
         });
         const mailOptions = {
-            from: 'amalabraham93@yahoo.com',
+            from: 'amalabraham93@gmail.com',
             to: email,
             subject: 'Email Verification',
             // text :`please click link:http://localhost:5000/users/verify/${verificationToken}`
@@ -51,14 +53,16 @@ class NodeMailerService {
     async sendReviewerEmail(email, password, conferencelink) {
         const transporter = nodemailer_1.default.createTransport({
             host: "sandbox.smtp.mailtrap.io",
-            port: 2525,
+            service: 'Gmail',
+            port: 587,
+            secure: true,
             auth: {
-                user: "9623e3ae453490",
-                pass: "06e7218ba3f1bf",
+                user: "amalabraham93@gmail.com",
+                pass: "qqtmolpqonvxlxnn"
             },
         });
         const mailOptions = {
-            from: "amalabraham93@yahoo.com",
+            from: "amalabraham93@gmail.com",
             to: email,
             subject: "Conference Reviewer Invitation",
             html: `
@@ -75,15 +79,17 @@ class NodeMailerService {
     }
     async conferenceStartNotification(emails, conferenceLink) {
         const transporter = nodemailer_1.default.createTransport({
-            host: 'sandbox.smtp.mailtrap.io',
-            port: 2525,
+            host: "sandbox.smtp.mailtrap.io",
+            service: 'Gmail',
+            port: 587,
+            secure: true,
             auth: {
-                user: '9623e3ae453490',
-                pass: '06e7218ba3f1bf',
+                user: "amalabraham93@gmail.com",
+                pass: "qqtmolpqonvxlxnn"
             },
         });
         const mailOptions = {
-            from: 'amalabraham93@yahoo.com',
+            from: 'amalabraham93@gmail.com',
             to: emails.join(','),
             subject: 'Conference Start Notification',
             html: `
