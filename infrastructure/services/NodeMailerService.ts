@@ -26,7 +26,7 @@
       });
 
       const mailOptions = {
-        from: 'amalabraham93@yahoo.com',
+        from: 'amalabraham93@gmail.com',
         to: email,
         subject: 'Email Verification',
         // text :`please click link:http://localhost:5000/users/verify/${verificationToken}`
@@ -67,7 +67,7 @@
       });
 
       const mailOptions = {
-        from: "amalabraham93@yahoo.com",
+        from: "amalabraham93@gmail.com",
         to: email,
         subject: "Conference Reviewer Invitation",
         html: `
@@ -98,7 +98,7 @@
       });
   
       const mailOptions = {
-        from: 'amalabraham93@yahoo.com',
+        from: 'amalabraham93@gmail.com',
         to: emails.join(','),
         subject: 'Conference Start Notification',
         html: `
